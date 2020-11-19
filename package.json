@@ -1,0 +1,17 @@
+{
+  "name": "Blanja-RESTful-API",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index",
+    "server": "nodemon index"
+  },
+  "repository": "https://github.com/dhiyo7/Blanja-RESTful-API.git",
+  "author": "dhiyo7 <dhiyoreksa12@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1"
+  }
+}
