@@ -1,9 +1,9 @@
 module.exports = {
     success: (res, data) => {
         const resObject = {
+            msg: 'Data Success',
             status: 200,
-            msg: 'Data Succsess',
-            data
+            data,
         };
         res.json(resObject)
     },

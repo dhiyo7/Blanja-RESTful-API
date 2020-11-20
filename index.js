@@ -1,32 +1,23 @@
-const express = require('express');
+const express = require("express");
+const logger = require("morgan");
+const mainRouter = require("./src/routes/index");
 const app = express();
-const port = 8000
-const mysql = require('mysql')
-
+const port = 8005;
 // listen port
 app.listen(port, () => {
-    console.log(`server running in port ${port}`);
-})
+  console.log(`Server is running at port ${port}`);
+});
 
-// koneksi ke db
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'blanja_db'
-})
+// menambahkan logger
+app.use(logger("dev"));
 
-// cek koneksi ke db
-connection.connect((err) => {
-    if (err) throw err;
-    console.log('koneksi ke db sukses');
-})
+// menambahkan parser untuk x-www-form-urlencoded
+app.use(express.urlencoded({ extended: false }));
+// extended: false => menggunakan qs
+// extended: true => menggunakan querystring
 
-app.get('/', (req, res) => {
-    res.send('Backend Blanja')
-})
+// menambahkan parser untuk raw json
+app.use(express.json());
 
-app.get('/products' , (req, res) => {
-    let sql = "SELECT * FROM products"
-    res.send()
-})
+app.use("/", mainRouter);
+
