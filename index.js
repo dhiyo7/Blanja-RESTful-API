@@ -20,4 +20,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use("/", mainRouter);
-
+// Handle all 404 responses
+app.use(function (req, res, next) {
+  res.status(404).json({
+    msg: "Data Not Found",
+    status: 404,
+  });
+});

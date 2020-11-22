@@ -1,13 +1,18 @@
 module.exports = {
     success: (res, data) => {
         const resObject = {
-            msg: 'Data Success',
+            message: 'Data Success',
             status: 200,
-            data,
+            data: data
         };
         res.json(resObject)
     },
     error: (res, err) => {
-        res.status(500).json(err)
-    }
+        const resObject = {
+            message: 'Data Error',
+            status: 500,
+            // error: err
+        };
+        res.status(500).json(resObject);
+    },
 }
