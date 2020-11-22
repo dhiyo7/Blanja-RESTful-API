@@ -39,4 +39,30 @@ module.exports = {
       });
     });
   },
+
+  postSize: (req) => {
+    return new Promise((resolve, reject) => {
+      const queryString = "INSERT INTO size SET ?";
+      db.query(queryString, req, (err, data) => {
+        if (!err) {
+          resolve(data);
+        } else {
+          reject(err);
+        }
+      });
+    });
+  },
+
+  deleteSize: (params) => {
+    return new Promise((resolve, reject) => {
+      const queryString = "DELETE FROM size WHERE id = " + params;
+      db.query(queryString, (err, data) => {
+        if (!err) {
+          resolve(data);
+        } else {
+          reject(err);
+        }
+      });
+    });
+  },
 };

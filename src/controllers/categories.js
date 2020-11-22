@@ -67,7 +67,7 @@ module.exports = {
     const insertBody = {
       ...body,
     };
-    // console.log(insertBody);
+    console.log(insertBody);
     categoriesModel
       .postCategory(insertBody, res)
       .then((data) => {
@@ -80,7 +80,7 @@ module.exports = {
       .catch((err) => {
         form.error(res, err);
       });
-    // console.log(req);
+    console.log(req);
   },
 
   deleteCategory: (reqBody, res) => {
