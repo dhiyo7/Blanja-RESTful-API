@@ -6,15 +6,15 @@ const categoriesRouter = require("./categories");
 const sizesRouter = require("./sizes");
 const colorsRouter = require("./colors");
 const productsRouter = require("./products");
+const searchRouter = require("./search");
 // const historiesRouter = require("./histories");
-// const searchRouter = require("./search");
 
 mainRouter.use("/", welcomeRouter);
 mainRouter.use("/categories", categoriesRouter);
 mainRouter.use("/sizes", sizesRouter);
 mainRouter.use("/colors", colorsRouter);
 mainRouter.use("/products", productsRouter);
+mainRouter.use("/search", searchRouter);
 // mainRouter.use("/histories", historiesRouter);
-// mainRouter.use("/search", searchRouter);
 
 module.exports = mainRouter;
