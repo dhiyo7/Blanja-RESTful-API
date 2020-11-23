@@ -5,7 +5,7 @@ const db = mySQL.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'blanja_db'
+    database: 'new_blanja_db'
 })
 
 // cek koneksi ke db
