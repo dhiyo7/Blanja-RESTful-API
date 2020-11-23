@@ -5,9 +5,7 @@ const welcomeRouter = require("./welcome");
 const categoriesRouter = require("./categories");
 const sizesRouter = require("./sizes");
 const colorsRouter = require("./colors");
-// const productsRouter = require("./products");
-// const productRouter = require("./product");
-// const categoryRouter = require("./category");
+const productsRouter = require("./products");
 // const historiesRouter = require("./histories");
 // const searchRouter = require("./search");
 
@@ -15,9 +13,7 @@ mainRouter.use("/", welcomeRouter);
 mainRouter.use("/categories", categoriesRouter);
 mainRouter.use("/sizes", sizesRouter);
 mainRouter.use("/colors", colorsRouter);
-// mainRouter.use("/products", productsRouter);
-// mainRouter.use("/product", productRouter);
-// mainRouter.use("/category", categoryRouter);
+mainRouter.use("/products", productsRouter);
 // mainRouter.use("/histories", historiesRouter);
 // mainRouter.use("/search", searchRouter);
 
