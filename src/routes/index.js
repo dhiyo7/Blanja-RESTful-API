@@ -7,6 +7,7 @@ const sizesRouter = require("./sizes");
 const colorsRouter = require("./colors");
 const productsRouter = require("./products");
 const searchRouter = require("./search");
+const sortingRouter = require("./sorting");
 // const historiesRouter = require("./histories");
 
 mainRouter.use("/", welcomeRouter);
@@ -15,6 +16,7 @@ mainRouter.use("/sizes", sizesRouter);
 mainRouter.use("/colors", colorsRouter);
 mainRouter.use("/products", productsRouter);
 mainRouter.use("/search", searchRouter);
+mainRouter.use("/sorting", sortingRouter);
 // mainRouter.use("/histories", historiesRouter);
 
 module.exports = mainRouter;
