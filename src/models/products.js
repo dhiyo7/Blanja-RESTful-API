@@ -3,7 +3,8 @@ const db = require("../config/mySQL");
 module.exports = {
   productAll: () => {
     return new Promise((resolve, reject) => {
-      const queryString = "SELECT * FROM products";
+      const queryString = `SELECT *, AVG(rating) as rating FROM products 
+            INNER JOIN ratings ON products.id = ratings.product_id GROUP BY products.id`;
       db.query(queryString, (err, data) => {
         if (!err) {
           resolve(data);
@@ -14,9 +15,10 @@ module.exports = {
     });
   },
 
-  getCategoryById: (params) => {
+  getProductById: (params) => {
     return new Promise((resolve, reject) => {
-      const queryString = "SELECT * FROM products WHERE id = " + params;
+      const queryString = `SELECT *, AVG(rating) as rating FROM products
+        INNER JOIN ratings ON products.id = ratings.product_id WHERE products.id = ${params} GROUP BY products.id`;
       db.query(queryString, (err, data) => {
         if (!err) {
           resolve(data);
@@ -33,6 +35,12 @@ module.exports = {
       db.query(queryString, req, (err, data) => {
         if (!err) {
           resolve(data);
+          const newRating = {
+            product_id: data.insertId,
+            rating: 1,
+          };
+          const queryString1 = "INSERT INTO ratings SET ?";
+          db.query(queryString1, newRating);
         } else {
           reject(err);
         }
@@ -42,7 +50,7 @@ module.exports = {
 
   editProduct: (req, params) => {
     return new Promise((resolve, reject) => {
-      const queryString = "UPDATE products SET ? WHERE id = "+params;
+      const queryString = "UPDATE products SET ? WHERE id = " + params;
       db.query(queryString, req, (err, data) => {
         if (!err) {
           resolve(data);

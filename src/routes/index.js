@@ -9,7 +9,7 @@ const productsRouter = require("./products");
 const searchRouter = require("./search");
 const sortingRouter = require("./sorting");
 const ratingRoute = require("./ratings");
-// const historiesRouter = require("./histories");
+const historyTransactionsRouter = require("./historyTransactions");
 
 mainRouter.use("/", welcomeRouter);
 mainRouter.use("/categories", categoriesRouter);
@@ -19,6 +19,6 @@ mainRouter.use("/products", productsRouter);
 mainRouter.use("/search", searchRouter);
 mainRouter.use("/sorting", sortingRouter);
 mainRouter.use("/ratings", ratingRoute)
-// mainRouter.use("/histories", historiesRouter);
+mainRouter.use("/history", historyTransactionsRouter);
 
 module.exports = mainRouter;

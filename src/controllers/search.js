@@ -4,7 +4,6 @@ const form = require("../helpers/form");
 module.exports = {
   searchProduct: (req, res) => {
     const { keyword } = req.query;
-    console.log(req.query);
     searchModel
       .searchProduct(keyword)
       .then((data) => {
@@ -15,7 +14,6 @@ module.exports = {
           });
         } else {
           form.success(res, data);
-          console.log(data);
         }
       })
       .catch((err) => {

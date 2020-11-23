@@ -13,11 +13,11 @@ module.exports = {
       });
   },
 
-  getCategoryById: (req, res) => {
+  getProductById: (req, res) => {
     const { id } = req.params;
     console.log(req);
     productsModel
-      .getCategoryById(id)
+      .getProductById(id)
       .then((data) => {
         if (!data.length) {
           res.status(404).json({
@@ -25,7 +25,7 @@ module.exports = {
             status: 404,
           });
         } else {
-          form.success(res, data);
+          form.success(res, data[0]);
         }
       })
       .catch((err) => {
