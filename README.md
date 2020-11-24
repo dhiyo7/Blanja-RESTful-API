@@ -1,5 +1,9 @@
 # Blanja-RESTful-API
 
+----------------
+
+
+
 ## About The Project
 
 ![](https://3.bp.blogspot.com/-4ZwQDCJTENo/XAopD6qwU1I/AAAAAAAAQsI/pZpGpNKQjGwR3nc67LN3CZKHzaTu_lpkwCLcBGAs/w1200-h630-p-k-no-nu/Blanja.png)
@@ -13,8 +17,6 @@ Projek ini adalah projek membuat sebuah Backend untuk halaman web [blanja.netlif
 - [ExpressJS](https://expressjs.com/)
 
 - [MySQL](https://www.mysql.com/)
-
-
 
 #### Flowchart API
 
@@ -51,10 +53,10 @@ atau bisa menggunakan yarn
 1. Clone repository
 
 ```textile
-https://github.com/dhiyo7/Blanja-RESTful-API.git
+git clone https://github.com/dhiyo7/Blanja-RESTful-API.git
 ```
 
-2. Install paket pendukung
+2. Install paket pendukung dalam `node_module`
 - dengan NPM
 
 ```textile
@@ -83,8 +85,6 @@ const db = mySQL.createConnection({
 > untuk schema api dan documentasi silahkan klik link di bawah
 > 
 > [BLANJA API - Publik](https://documenter.getpostman.com/view/6626576/TVewYPbM)
-
-
 
 ### Contribution
 
