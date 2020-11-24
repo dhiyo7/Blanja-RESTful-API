@@ -64,15 +64,15 @@ yarn add
 3. Konfigurasi Database , silahkan sesuaikan pada halaman index.js
 
 ```js
-const conn = mysql.createConnection({
-  host: &#39;localhost&#39;,
-  user: &#39;root&#39;,
-  password: &#39;&#39;,
-  database: &#39;namaDB&#39;
-});
+const db = mySQL.createConnection({
+    host: 'hostname',
+    user: 'user_mysql',
+    password: 'pass_mysql',
+    database: 'nama_db'
+})
 ```
 
-#### Scheme API
+### Scheme API
 
 > untuk schema api dan documentasi silahkan klik link di bawah
 > 
@@ -83,8 +83,6 @@ const conn = mysql.createConnection({
 ### Contribution
 
 berkontribusi membuat komunitas open source menjadi tempat yang luar biasa untuk belajar, menginspirasi, dan berkreasi. dan dapat memajukan projek ini, sangat diperislahkan dan buat ***branch*** baru yah.
-
-
 
 #### LICENSE
 
