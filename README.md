@@ -14,6 +14,12 @@ Projek ini adalah projek membuat sebuah Backend untuk halaman web [blanja.netlif
 
 - [MySQL](https://www.mysql.com/)
 
+
+
+#### Flowchart API
+
+[Blanja - Google Drive](https://drive.google.com/file/d/1m2F4nPHiFctrc-3hsgHB-A6Sfht2NmqF/view?usp=sharing) - draw.io
+
 #### Scheme Database
 
 ![ ](https://res.cloudinary.com/devloops7/image/upload/v1606172024/newBlanja/screenshot-localhost-2020.11.24-05_52_17_npornk.png)
