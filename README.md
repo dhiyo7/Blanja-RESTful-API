@@ -82,6 +82,8 @@ const db = mySQL.createConnection({
 
 > untuk schema api dan documentasi silahkan klik link di bawah
 > 
+> - Conoth Guide API - [Guide API](https://github.com/dhiyo7/Blanja-RESTful-API/blob/main/SchemeAPI.md)
+> 
 > [BLANJA API - Publik](https://documenter.getpostman.com/view/6626576/TVewYPbM)
 
 ### Contribution

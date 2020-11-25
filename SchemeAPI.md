@@ -2,8 +2,6 @@
 
 untuk endpoint , hhtp response, message response, serta body yang harus dikirim.
 
-
-
 ### {{host}}/products
 
 | Endpoint    | Method | Body / Params |
@@ -33,7 +31,7 @@ untuk endpoint , hhtp response, message response, serta body yang harus dikirim.
       "product_id": 1,
       "rating": 4
     },
-    {
+    {
       "id": 4,
       "product_name": "Kaos Polos Merah",
       "category_id": 9,
@@ -48,7 +46,8 @@ untuk endpoint , hhtp response, message response, serta body yang harus dikirim.
       "updated_at": "2020-11-22T21:30:48.000Z",
       "product_id": 3,
       "rating": 4
-    },
+    }
+]
 ```
 
 | Endpoint    | Method | Body / Params |
@@ -180,5 +179,3 @@ untuk endpoint , hhtp response, message response, serta body yang harus dikirim.
   "status": 404
 }
 ```
-
-
