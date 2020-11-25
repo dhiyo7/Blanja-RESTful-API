@@ -1,5 +1,5 @@
 {
-  "name": "Blanja-RESTful-API",
+  "name": "blanja-restful-api",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,7 @@
   "author": "dhiyo7 <dhiyoreksa12@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "eslint": "^7.14.0",
     "express": "^4.17.1",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1"
