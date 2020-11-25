@@ -2,8 +2,6 @@
 
 ----------------
 
-
-
 ## About The Project
 
 ![](https://3.bp.blogspot.com/-4ZwQDCJTENo/XAopD6qwU1I/AAAAAAAAQsI/pZpGpNKQjGwR3nc67LN3CZKHzaTu_lpkwCLcBGAs/w1200-h630-p-k-no-nu/Blanja.png)
