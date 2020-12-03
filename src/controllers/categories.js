@@ -6,7 +6,7 @@ module.exports = {
     categoriesModel
       .categoryAll()
       .then((data) => {
-        form.success(res, data);
+        form.nested(res, data);
       })
       .catch((err) => {
         form.error(res, err);
@@ -26,7 +26,7 @@ module.exports = {
             status: 404,
           });
         } else {
-          form.success(res, data[0]);
+          form.nested(res, data[0]);
         }
       })
       .catch((err) => {

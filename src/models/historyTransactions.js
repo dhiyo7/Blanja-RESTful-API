@@ -14,7 +14,7 @@ module.exports = {
     });
   },
 
-  postHistoryTransactions: (req, res) => {
+  postHistoryTransactions: (req) => {
     return new Promise((resolve, reject) => {
       const queryString = "INSERT INTO history_transactions SET ?";
       db.query(queryString, req, (err, data) => {
