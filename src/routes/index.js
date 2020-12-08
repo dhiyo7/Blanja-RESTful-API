@@ -10,6 +10,7 @@ const searchRouter = require("./search");
 const sortingRouter = require("./sorting");
 const ratingRoute = require("./ratings");
 const historyTransactionsRouter = require("./historyTransactions");
+const authRouter = require("./auth");
 
 mainRouter.use("/", welcomeRouter);
 mainRouter.use("/categories", categoriesRouter);
@@ -18,7 +19,8 @@ mainRouter.use("/colors", colorsRouter);
 mainRouter.use("/products", productsRouter);
 mainRouter.use("/search", searchRouter);
 mainRouter.use("/sorting", sortingRouter);
-mainRouter.use("/ratings", ratingRoute)
+mainRouter.use("/ratings", ratingRoute);
 mainRouter.use("/history", historyTransactionsRouter);
+mainRouter.use("/auth", authRouter);
 
 module.exports = mainRouter;
