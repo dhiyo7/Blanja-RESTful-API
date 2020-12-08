@@ -34,7 +34,7 @@ module.exports = {
   postLogin: (body) => {
     return new Promise((resolve, reject) => {
       const { username, password } = body;
-      const queryString = "SELECT password FROM users where username=?";
+      const queryString = "SELECT password FROM users where username = ?";
       db.query(queryString, username, (err, data) => {
         if (err) {
           reject({
@@ -67,7 +67,7 @@ module.exports = {
               const payload = { username };
               const secret = process.env.SECRET_KEY;
               const token = jwt.sign(payload, secret);
-              resolve(token);
+              resolve({token});
             }
           });
         }

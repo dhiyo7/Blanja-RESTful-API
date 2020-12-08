@@ -7,10 +7,10 @@ module.exports = {
     };
     res.json(resObject);
   },
-  error: (res) => {
+  error: (res, err) => {
     const resObject = {
-      message: "Data Error",
-      status: 500,
+      message: err,
+      // status: 500,
       // error: err
     };
     res.status(500).json(resObject);
