@@ -13,5 +13,15 @@ module.exports = {
       });
     });
   },
-  login: () => {},
+  login: (req, res) => {
+    const { body } = req;
+    authModel
+      .postLogin(body)
+      .then((data) => {
+          form.success(res, data)
+      })
+      .catch((err) => { 
+        form.error(res, err);
+      });
+  },
 };

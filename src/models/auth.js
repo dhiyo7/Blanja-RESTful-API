@@ -1,5 +1,6 @@
 const db = require("../config/mySQL");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 module.exports = {
   postNewUser: (body) => {
@@ -26,6 +27,50 @@ module.exports = {
             }
           });
         });
+      });
+    });
+  },
+
+  postLogin: (body) => {
+    return new Promise((resolve, reject) => {
+      const { username, password } = body;
+      const queryString = "SELECT password FROM users where username=?";
+      db.query(queryString, username, (err, data) => {
+        if (err) {
+          reject({
+            msg: "Error SQL",
+            status: 500,
+            err,
+          });
+        }
+        // Handle User Not Found","
+        if (!data[0]) {
+          reject({
+            msg: "User Not Found",
+            status: 404,
+          });
+        } else {
+          bcrypt.compare(password, data[0].password, (err, result) => {
+            if (err) {
+              reject({
+                msg: "Hash Error",
+                status: 500,
+                err,
+              });
+            }
+            if (!result) {
+              reject({
+                msg: "Wrong Password",
+                status: 401,
+              });
+            } else {
+              const payload = { username };
+              const secret = process.env.SECRET_KEY;
+              const token = jwt.sign(payload, secret);
+              resolve(token);
+            }
+          });
+        }
       });
     });
   },
