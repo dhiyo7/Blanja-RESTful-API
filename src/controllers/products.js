@@ -46,11 +46,16 @@ module.exports = {
 
   postProduct: (req, res) => {
     const { body } = req;
+    const level = req.decodedToken.level;
+    const filepath = JSON.stringify(
+      req.files.map((e) => "/image" + "/" + e.filename+" ")
+  )
     const insertBody = {
       ...body,
+      product_photo: filepath,
     };
     productsModel
-      .postProduct(insertBody, res)
+      .postProduct(insertBody, level, res, filepath)
       .then((data) => {
         const newResObj = {
           id: data.insertId,
@@ -67,9 +72,10 @@ module.exports = {
     const { body } = req;
     const insertBody = { ...body };
     const { id } = req.params;
+    const level = req.decodeToken.level;
 
     productsModel
-      .editProduct(insertBody, id, res)
+      .editProduct(insertBody, id, res, level)
       .then((data) => {
         if (data.affectedRows === 0) {
           res.status(404).json({
@@ -91,8 +97,9 @@ module.exports = {
 
   deleteProduct: (req, res) => {
     const { id } = req.params;
+    const level = req.decodeToken.level;
     productsModel
-      .deleteProduct(id)
+      .deleteProduct(id, level)
       .then((data) => {
         if (data.affectedRows === 0) {
           res.status(404).json({

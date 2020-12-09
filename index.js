@@ -1,4 +1,4 @@
-require("dotenv").config()
+require("dotenv").config();
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
@@ -13,7 +13,6 @@ app.listen(port, () => {
 
 app.use(cors());
 
-
 // menambahkan logger
 app.use(logger("dev"));
 
@@ -24,6 +23,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // menambahkan parser untuk raw json
 app.use(express.json());
+
+app.use(express.static("public"));
 
 app.use("/", mainRouter);
 // Handle all 404 responses

@@ -19,8 +19,10 @@ module.exports = {
             currentPage: page,
             previousPage:
               page === 1 ? null : `/products?page=${page - 1}&limit=${limit}`,
-            nextPage: page === limit !== data.length && 
-            limit !== data.length ? null : `/products?page=${page + 1}&limit=${limit}`,
+            nextPage:
+              (page === limit) !== data.length && limit !== data.length
+                ? null
+                : `/products?page=${page + 1}&limit=${limit}`,
           },
         };
         if (!err) {
@@ -53,48 +55,69 @@ module.exports = {
     });
   },
 
-  postProduct: (req) => {
+  postProduct: (req, level, filepath) => {
     return new Promise((resolve, reject) => {
       const queryString = "INSERT INTO products SET ?";
-      db.query(queryString, req, (err, data) => {
-        if (!err) {
-          resolve(data);
-          const newRating = {
-            product_id: data.insertId,
-            rating: 1,
-          };
-          const queryString1 = "INSERT INTO ratings SET ?";
-          db.query(queryString1, newRating);
-        } else {
-          reject(err);
-        }
-      });
+      if (level > 1) {
+        reject({
+          msg: "Just Seller can Upload Products",
+          status: 401,
+        });
+      } else {
+        db.query(queryString, [req, level, filepath], (err, data) => {
+          if (!err) {
+            resolve(data);
+            const newRating = {
+              product_id: data.insertId,
+              rating: 1,
+            };
+            const queryString1 = "INSERT INTO ratings SET ?";
+            db.query(queryString1, newRating);
+          } else {
+            reject(err);
+          }
+        });
+      }
     });
   },
 
-  editProduct: (req, params) => {
+  editProduct: (req, params, level) => {
     return new Promise((resolve, reject) => {
       const queryString = "UPDATE products SET ? WHERE id = " + params;
-      db.query(queryString, req, (err, data) => {
-        if (!err) {
-          resolve(data);
-        } else {
-          reject(err);
-        }
-      });
+      if (level > 1) {
+        reject({
+          msg: "Just Seller can Edit Products",
+          status: 401,
+        });
+      } else {
+        db.query(queryString, req, (err, data) => {
+          if (!err) {
+            resolve(data);
+          } else {
+            reject(err);
+          }
+        });
+      }
     });
   },
 
-  deleteProduct: (params) => {
+  deleteProduct: (params, level) => {
     return new Promise((resolve, reject) => {
       const queryString = "DELETE FROM products WHERE id = ?";
-      db.query(queryString, params, (err, data) => {
-        if (!err) {
-          resolve(data);
-        } else {
-          reject(err);
-        }
-      });
+      if (level > 1) {
+        reject({
+          msg: "Just Seller can Delete Products",
+          status: 401,
+        });
+      } else {
+        db.query(queryString, [params, level], (err, data) => {
+          if (!err) {
+            resolve(data);
+          } else {
+            reject(err);
+          }
+        });
+      }
     });
   },
 };
