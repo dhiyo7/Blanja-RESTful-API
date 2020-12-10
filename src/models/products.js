@@ -11,18 +11,27 @@ module.exports = {
       INNER JOIN colors as cl ON p.color_id = cl.id
       INNER JOIN conditions as cd ON p.condition_id = cd.id
       INNER JOIN ratings ON p.id = ratings.product_id
-      GROUP BY p.id LIMIT ? OFFSET ?`;
+      GROUP BY p.id LIMIT ? OFFSET ? ; SELECT p.id, p.product_name, c.category_name, s.size, cl.color_hexa, cd.conditions, p.product_price, p.product_qty, p.product_desc, p.product_photo,  AVG(rating) as rating FROM products as p
+      INNER JOIN categories as c ON p.category_id = c.id
+      INNER JOIN size as s ON p.size_id = s.id
+      INNER JOIN colors as cl ON p.color_id = cl.id
+      INNER JOIN conditions as cd ON p.condition_id = cd.id
+      INNER JOIN ratings ON p.id = ratings.product_id
+      GROUP BY p.id`;
       db.query(queryString, [limit, offset, page], (err, data) => {
+        console.log(data);
+        let product = db.query('SELECT * FROM products', (err, data) => {return data});
         const newResult = {
-          products: data,
+          products: data[0],
           pageInfo: {
             currentPage: page,
             previousPage:
               page === 1 ? null : `/products?page=${page - 1}&limit=${limit}`,
             nextPage:
-              (page === limit) !== data.length && limit !== data.length
+              (page === limit) !== data[0].length && limit !== data[0].length
                 ? null
                 : `/products?page=${page + 1}&limit=${limit}`,
+            totalPage: Math.ceil(data[1].length / limit)
           },
         };
         if (!err) {
@@ -58,7 +67,7 @@ module.exports = {
   postProduct: (req, level, filepath) => {
     return new Promise((resolve, reject) => {
       const queryString = "INSERT INTO products SET ?";
-      if (level > 1) {
+      if (level !== 2) {
         reject({
           msg: "Just Seller can Upload Products",
           status: 401,
@@ -84,13 +93,13 @@ module.exports = {
   editProduct: (req, params, level) => {
     return new Promise((resolve, reject) => {
       const queryString = "UPDATE products SET ? WHERE id = " + params;
-      if (level > 1) {
+      if (level < 2) {
         reject({
-          msg: "Just Seller can Edit Products",
+          msg: "Just Seller can Edit Product",
           status: 401,
         });
       } else {
-        db.query(queryString, req, (err, data) => {
+        db.query(queryString, [req, level], (err, data) => {
           if (!err) {
             resolve(data);
           } else {
@@ -104,7 +113,7 @@ module.exports = {
   deleteProduct: (params, level) => {
     return new Promise((resolve, reject) => {
       const queryString = "DELETE FROM products WHERE id = ?";
-      if (level > 1) {
+      if (level < 2) {
         reject({
           msg: "Just Seller can Delete Products",
           status: 401,

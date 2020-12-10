@@ -46,14 +46,15 @@ module.exports = {
 
   postProduct: (req, res) => {
     const { body } = req;
-    const level = req.decodedToken.level;
+    const level = req.decodedToken.level_id;
     const filepath = JSON.stringify(
-      req.files.map((e) => "/image" + "/" + e.filename+" ")
-  )
+      req.files.map((e) => "/image" + "/" + e.filename + " ")
+    );
     const insertBody = {
       ...body,
       product_photo: filepath,
     };
+    console.log(level);
     productsModel
       .postProduct(insertBody, level, res, filepath)
       .then((data) => {
@@ -70,9 +71,11 @@ module.exports = {
 
   editProduct: (req, res) => {
     const { body } = req;
-    const insertBody = { ...body };
     const { id } = req.params;
-    const level = req.decodeToken.level;
+    const level = req.decodedToken.level_id;
+    console.log(level);
+    const singlePath = "/image/" + req.file.filename;
+    const insertBody = { ...body, product_photo: singlePath };
 
     productsModel
       .editProduct(insertBody, id, res, level)
@@ -97,7 +100,7 @@ module.exports = {
 
   deleteProduct: (req, res) => {
     const { id } = req.params;
-    const level = req.decodeToken.level;
+    const level = req.decodedToken.level_id;
     productsModel
       .deleteProduct(id, level)
       .then((data) => {

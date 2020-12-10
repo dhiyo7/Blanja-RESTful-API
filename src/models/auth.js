@@ -34,7 +34,7 @@ module.exports = {
   postLogin: (body) => {
     return new Promise((resolve, reject) => {
       const { username, password } = body;
-      const queryString = "SELECT password FROM users where username = ?";
+      const queryString = "SELECT level_id, password FROM users where username = ?";
       db.query(queryString, username, (err, data) => {
         if (err) {
           reject({
@@ -50,6 +50,7 @@ module.exports = {
             status: 404,
           });
         } else {
+          // console.log(data);
           bcrypt.compare(password, data[0].password, (err, result) => {
             if (err) {
               reject({
@@ -64,7 +65,7 @@ module.exports = {
                 status: 401,
               });
             } else {
-              const payload = { username };
+              const payload = { username : username, level_id : data[0].level_id};
               const secret = process.env.SECRET_KEY;
               const token = jwt.sign(payload, secret);
               resolve({token});
