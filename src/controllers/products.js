@@ -121,4 +121,17 @@ module.exports = {
         form.error(res, err);
       });
   },
+
+  getProductByUserId: (req, res) => {
+    const user_id = req.decodedToken.id;
+    console.log("KONTOL"+req.decodedToken.id);
+    productsModel
+      .getProductByUserId(user_id)
+      .then((data) => {
+        form.success(res, data);
+      })
+      .catch((err) => {
+        form.error(res, err);
+      });
+  },
 };

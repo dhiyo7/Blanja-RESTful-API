@@ -28,10 +28,10 @@ module.exports = {
             previousPage:
               page === 1 ? null : `/products?page=${page - 1}&limit=${limit}`,
             nextPage:
-              (page === limit) !== data[0].length && limit !== data[0].length
+              (page === limit) !== data.length && limit !== data[0].length
                 ? null
                 : `/products?page=${page + 1}&limit=${limit}`,
-            totalPage: Math.ceil(data[1].length / limit)
+            totalPage: Math.ceil(data[1].length / limit),
           },
         };
         if (!err) {
@@ -90,10 +90,10 @@ module.exports = {
     });
   },
 
-  editProduct: (req, params, level) => {
+  editProduct: (req, params, res, level) => {
     return new Promise((resolve, reject) => {
       const queryString = "UPDATE products SET ? WHERE id = " + params;
-      if (level < 2) {
+      if (level !== 2) {
         reject({
           msg: "Just Seller can Edit Product",
           status: 401,
@@ -127,6 +127,25 @@ module.exports = {
           }
         });
       }
+    });
+  },
+
+  getProductByUserId: (user_id) => {
+    return new Promise((resolve, reject) => {
+      const queryString = `SELECT p.id, p.product_name, c.category_name, s.size, cl.color_hexa, cd.conditions, p.product_price, p.product_qty, p.product_desc, p.product_photo,  AVG(rating) as rating FROM products as p
+      INNER JOIN categories as c ON p.category_id = c.id
+      INNER JOIN size as s ON p.size_id = s.id
+      INNER JOIN colors as cl ON p.color_id = cl.id
+      INNER JOIN conditions as cd ON p.condition_id = cd.id
+      INNER JOIN ratings ON p.id = ratings.product_id
+      WHERE p.user_id = ? GROUP BY p.id `;
+      db.query(queryString, user_id, (err, data) => {
+        if (!err) {
+          resolve(data);
+        } else {
+          reject(err);
+        }
+      });
     });
   },
 };
