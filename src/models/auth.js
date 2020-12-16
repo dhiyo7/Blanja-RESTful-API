@@ -75,6 +75,7 @@ module.exports = {
               const secret = process.env.SECRET_KEY;
               const token = jwt.sign(payload, secret);
               resolve({ token });
+              console.log(data[0]);
             }
           });
         }

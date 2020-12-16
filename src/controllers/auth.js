@@ -18,7 +18,7 @@ module.exports = {
     authModel
       .postLogin(body)
       .then((data) => {
-        console.log(data);
+        // console.log(data);
           form.success(res, data)
       })
       .catch((err) => { 
