@@ -47,6 +47,7 @@ module.exports = {
   postProduct: (req, res) => {
     const { body } = req;
     const level = req.decodedToken.level_id;
+    const user_id = req.decodedToken.id;
     const filepath = JSON.stringify(
       req.files.map((e) => "/image" + "/" + e.filename + " ")
     );
@@ -56,7 +57,7 @@ module.exports = {
     };
     console.log(level);
     productsModel
-      .postProduct(insertBody, level, res, filepath)
+      .postProduct(insertBody, level, user_id, res, filepath)
       .then((data) => {
         const newResObj = {
           id: data.insertId,

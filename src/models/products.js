@@ -64,7 +64,7 @@ module.exports = {
     });
   },
 
-  postProduct: (req, level, filepath) => {
+  postProduct: (req, level, user_id, filepath) => {
     return new Promise((resolve, reject) => {
       const queryString = "INSERT INTO products SET ?";
       if (level !== 2) {
@@ -73,7 +73,7 @@ module.exports = {
           status: 401,
         });
       } else {
-        db.query(queryString, [req, level, filepath], (err, data) => {
+        db.query(queryString, [req, level, user_id, filepath], (err, data) => {
           if (!err) {
             resolve(data);
             const newRating = {
