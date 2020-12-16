@@ -4,7 +4,7 @@ const form = require("../helpers/form");
 module.exports = {
   productAll: (req, res) => {
     const { query } = req;
-    const limit = Number(query.limit) || 5;
+    const limit = Number(query.limit) || 15;
     const page = Number(query.page) || 1;
     const offset = (page - 1) * limit || 0;
     productsModel
@@ -49,7 +49,7 @@ module.exports = {
     const level = req.decodedToken.level_id;
     const user_id = req.decodedToken.id;
     const filepath = JSON.stringify(
-      req.files.map((e) => "/image" + "/" + e.filename + " ")
+      req.files.map((e) => 'http://localhost:8007'+"/image" + "/" + e.filename + " ")
     );
     const insertBody = {
       ...body,
@@ -75,7 +75,9 @@ module.exports = {
     const { id } = req.params;
     const level = req.decodedToken.level_id;
     console.log(level);
-    const singlePath = "/image/" + req.file.filename;
+    const singlePath = JSON.stringify(
+      req.files.map((e) => 'http://localhost:8007'+"/image" + "/" + e.filename + " ")
+    );
     const insertBody = { ...body, product_photo: singlePath };
 
     productsModel
