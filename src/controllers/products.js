@@ -4,7 +4,7 @@ const form = require("../helpers/form");
 module.exports = {
   productAll: (req, res) => {
     const { query } = req;
-    const limit = Number(query.limit) || 5;
+    const limit = Number(query.limit) || 15;
     const page = Number(query.page) || 1;
     const offset = (page - 1) * limit || 0;
     productsModel
@@ -47,18 +47,17 @@ module.exports = {
   postProduct: (req, res) => {
     const { body } = req;
     const level = req.decodedToken.level_id;
+    const user_id = req.decodedToken.id;
     const filepath = JSON.stringify(
-      req.files.map((e) => "/image" + "/" + e.filename+" ")
-    )
-
-    // console.log(req.decodedToken);
-
+      req.files.map((e) => 'http://localhost:8007'+"/image" + "/" + e.filename + " ")
+    );
     const insertBody = {
       ...body,
       product_photo: filepath,
     };
+    console.log(level);
     productsModel
-      .postProduct(insertBody, level, res, filepath)
+      .postProduct(insertBody, level, user_id, res, filepath)
       .then((data) => {
         const newResObj = {
           id: data.insertId,
@@ -73,9 +72,13 @@ module.exports = {
 
   editProduct: (req, res) => {
     const { body } = req;
-    const insertBody = { ...body };
     const { id } = req.params;
-    const level = req.decodeToken.level;
+    const level = req.decodedToken.level_id;
+    console.log(level);
+    const singlePath = JSON.stringify(
+      req.files.map((e) => 'http://localhost:8007'+"/image" + "/" + e.filename + " ")
+    );
+    const insertBody = { ...body, product_photo: singlePath };
 
     productsModel
       .editProduct(insertBody, id, res, level)
@@ -100,7 +103,7 @@ module.exports = {
 
   deleteProduct: (req, res) => {
     const { id } = req.params;
-    const level = req.decodeToken.level;
+    const level = req.decodedToken.level_id;
     productsModel
       .deleteProduct(id, level)
       .then((data) => {
@@ -116,6 +119,19 @@ module.exports = {
           };
           res.json(newResObj);
         }
+      })
+      .catch((err) => {
+        form.error(res, err);
+      });
+  },
+
+  getProductByUserId: (req, res) => {
+    const user_id = req.decodedToken.id;
+    console.log("KONTOL"+req.decodedToken.id);
+    productsModel
+      .getProductByUserId(user_id)
+      .then((data) => {
+        form.success(res, data);
       })
       .catch((err) => {
         form.error(res, err);

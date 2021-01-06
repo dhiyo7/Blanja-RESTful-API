@@ -50,6 +50,7 @@ module.exports = {
             status: 404,
           });
         } else {
+          // console.log(data);
           bcrypt.compare(password, data[0].password, (err, result) => {
             if (err) {
               reject({
