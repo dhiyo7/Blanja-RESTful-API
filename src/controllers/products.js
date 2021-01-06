@@ -46,10 +46,13 @@ module.exports = {
 
   postProduct: (req, res) => {
     const { body } = req;
-    const level = req.decodedToken.level;
+    const level = req.decodedToken.level_id;
     const filepath = JSON.stringify(
       req.files.map((e) => "/image" + "/" + e.filename+" ")
-  )
+    )
+
+    // console.log(req.decodedToken);
+
     const insertBody = {
       ...body,
       product_photo: filepath,
