@@ -28,10 +28,10 @@ module.exports = {
             previousPage:
               page === 1 ? null : `/products?page=${page - 1}&limit=${limit}`,
             nextPage:
-              (page === limit) !== data.length && limit !== data[0].length
+              (page === limit) !== data[0].length && limit !== data[0].length
                 ? null
                 : `/products?page=${page + 1}&limit=${limit}`,
-            totalPage: Math.ceil(data[1].length / limit),
+            totalPage: Math.ceil(data[1].length / limit)
           },
         };
         if (!err) {
