@@ -64,7 +64,7 @@ module.exports = {
     const insertBody = {
       ...body,
     };
-    console.log(req);
+    // console.log(req);
     sizeModel
       .postSize(insertBody, res)
       .then((data) => {

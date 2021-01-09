@@ -26,7 +26,7 @@ module.exports = {
 
   getProductById: (req, res) => {
     const { id } = req.params;
-    console.log(req);
+    // console.log(req);
     productsModel
       .getProductById(id)
       .then((data) => {
@@ -53,9 +53,10 @@ module.exports = {
     );
     const insertBody = {
       ...body,
+      user_id: user_id,
       product_photo: filepath,
     };
-    console.log(level);
+    // console.log(level);
     productsModel
       .postProduct(insertBody, level, user_id, res, filepath)
       .then((data) => {
@@ -74,7 +75,7 @@ module.exports = {
     const { body } = req;
     const { id } = req.params;
     const level = req.decodedToken.level_id;
-    console.log(level);
+    // console.log(level);
     const singlePath = JSON.stringify(
       req.files.map((e) => 'http://localhost:8007'+"/image" + "/" + e.filename + " ")
     );
@@ -127,7 +128,6 @@ module.exports = {
 
   getProductByUserId: (req, res) => {
     const user_id = req.decodedToken.id;
-    console.log("KONTOL"+req.decodedToken.id);
     productsModel
       .getProductByUserId(user_id)
       .then((data) => {

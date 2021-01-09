@@ -19,7 +19,7 @@ module.exports = {
       INNER JOIN ratings ON p.id = ratings.product_id
       GROUP BY p.id`;
       db.query(queryString, [limit, offset, page], (err, data) => {
-        console.log(data);
+        // console.log(data);
         // let product = db.query('SELECT * FROM products', (err, data) => {return data});
         const newResult = {
           products: data[0],
