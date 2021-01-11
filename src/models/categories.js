@@ -3,8 +3,8 @@ const db = require("../config/mySQL");
 module.exports = {
   categoryAll: () => {
     return new Promise((resolve, reject) => {
-      const queryString = ["SELECT * FROM categories", "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.id"];
-      db.query(queryString.join(';'),  (err, data) => {
+      const queryString = "SELECT * FROM categories";
+      db.query(queryString,(err, data) => {
         if (!err) {
           resolve(data);
         } else {
@@ -16,7 +16,7 @@ module.exports = {
 
   getCategoryById: (params) => {
     return new Promise((resolve, reject) => {
-      const queryString = ["SELECT * FROM categories WHERE id ="+params, "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.id WHERE category_id="+params];
+      const queryString = ["SELECT * FROM categories WHERE id_categories ="+params, "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.id_categories WHERE category_id="+params];
       db.query(queryString.join(';'), (err, data) => {
         if (!err) {
           resolve(data);

@@ -1,4 +1,5 @@
 const categoriesModel = require("../models/categories");
+const productsModel = require("../models/products");
 const form = require("../helpers/form");
 
 module.exports = {
@@ -6,7 +7,7 @@ module.exports = {
     categoriesModel
       .categoryAll()
       .then((data) => {
-        form.nested(res, data);
+        form.success(res, data);
       })
       .catch((err) => {
         form.error(res, err);
@@ -15,8 +16,25 @@ module.exports = {
 
   getCategoryById: (reqBody, res) => {
     const { id } = reqBody.params;
+    // Promise.all([productsModel.getProductById(id, res),categoriesModel.getCategoryById(id, res)])
+    // .then((result) => {
+    //   const finalResult = result.data;
+    //   const products = result[0].data;
+    //   console.log('Final ', finalResult);
+    //   console.log('products ', products);
+    //   // if (!finalResult || !products)
+    //   // return res.status(404).json({ msg: "Recipe not found" });
+    //   // finalResult.products = products;
+    //   // res.status(200).json({
+    //   //   msg: "Data Recipe successfully",
+    //   //   status: 200,
+    //   //   data: finalResult,
+    //   // });
+    // })
+    // .catch((err) => res.status(500).json({ msg: err.message }));
+
     // console.log(body);
-    // console.log(id);
+    console.log(id);
     categoriesModel
       .getCategoryById(id, res)
       .then((data) => {
@@ -26,7 +44,7 @@ module.exports = {
             status: 404,
           });
         } else {
-          form.nested(res, data[0]);
+          form.nested(res, data);
         }
       })
       .catch((err) => {

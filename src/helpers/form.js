@@ -19,6 +19,10 @@ module.exports = {
   nested: (res, data) => {
     let productArray = data[1];
     let categoryArray = data[0];
+
+    // console.log('category ',categoryArray[0]);
+    // console.log('product ',productArray);
+
     const sortKey = "category_name";
     categoryArray.sort((a, b) => {
       if (a[sortKey] < b[sortKey]) {
@@ -48,11 +52,12 @@ module.exports = {
     }, categories);
 
     let result = Object.values(categories);
+    // let result = categories;
 
     const resObject = {
       message: "Data Success",
       status: 200,
-      data: result,
+      data: result[0],
     };
     res.json(resObject);
   },
