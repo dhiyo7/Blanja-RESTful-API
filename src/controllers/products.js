@@ -4,7 +4,7 @@ const form = require("../helpers/form");
 module.exports = {
   productAll: (req, res) => {
     const { query } = req;
-    const { keyword } = req.query || keyword == "";
+    const { keyword } = req.query;
     const limit = Number(query.limit) || 5;
     const page = Number(query.page) || 1;
     const offset = (page - 1) * limit || 0;
