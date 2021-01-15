@@ -11,6 +11,7 @@ const sortingRouter = require("./sorting");
 const ratingRoute = require("./ratings");
 const historyTransactionsRouter = require("./historyTransactions");
 const authRouter = require("./auth");
+const addressRouter = require("./address");
 
 mainRouter.use("/", welcomeRouter);
 mainRouter.use("/categories", categoriesRouter);
@@ -22,5 +23,6 @@ mainRouter.use("/sorting", sortingRouter);
 mainRouter.use("/ratings", ratingRoute);
 mainRouter.use("/history", historyTransactionsRouter);
 mainRouter.use("/auth", authRouter);
+mainRouter.use("/address", addressRouter);
 
 module.exports = mainRouter;

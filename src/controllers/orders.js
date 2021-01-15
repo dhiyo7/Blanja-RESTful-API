@@ -1,4 +1,4 @@
-const historyTransactionsModel = require("../models/historyTransactions");
+const historyTransactionsModel = require("../models/orders");
 const form = require("../helpers/form");
 
 module.exports = {
