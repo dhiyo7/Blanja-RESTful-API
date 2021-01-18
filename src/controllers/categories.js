@@ -14,8 +14,11 @@ module.exports = {
       });
   },
 
-  getCategoryById: (reqBody, res) => {
-    const { id } = reqBody.params;
+  getCategoryById: (req, res) => {
+    const { id } = req.params;
+    const { query } = req;
+    const { keyword } = req.query;
+
     // Promise.all([productsModel.getProductById(id, res),categoriesModel.getCategoryById(id, res)])
     // .then((result) => {
     //   const finalResult = result.data;
@@ -36,7 +39,7 @@ module.exports = {
     // console.log(body);
     console.log(id);
     categoriesModel
-      .getCategoryById(id, res)
+      .getCategoryById(id, res, keyword)
       .then((data) => {
         if (!data.length) {
           res.status(404).json({
