@@ -61,4 +61,67 @@ module.exports = {
     };
     res.json(resObject);
   },
+
+  nestedAll: (res, data) => {
+    let orderDetailArray = data[1];
+    let orderArray = data[0];
+
+    let orders = orderArray.reduce((map, row) => {
+      const key = row["id"];
+      console.log("order key = " + key);
+      map[key] = row;
+      return map;
+    }, {});
+
+    orderDetailArray.reduce((map, row) => {
+      const key = row["order_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].order_detail) map[key].order_detail = [];
+        map[key].order_detail.push(row);
+      }
+
+      return map;
+    }, orders);
+
+    let result = Object.values(orders);
+
+    const resObject = {
+      message: "Data Success",
+      status: 200,
+      data: result,
+    };
+    res.json(resObject);
+  },
+  nestedOne: (res, data) => {
+    let orderDetailArray = data[1];
+    let orderArray = data[0];
+
+    let orders = orderArray.reduce((map, row) => {
+      const key = row["id"];
+      console.log("order key = " + key);
+      map[key] = row;
+      return map;
+    }, {});
+
+    orderDetailArray.reduce((map, row) => {
+      const key = row["order_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].order_detail) map[key].order_detail = [];
+        map[key].order_detail.push(row);
+      }
+
+      return map;
+    }, orders);
+
+    let result = Object.values(orders);
+
+    const resObject = {
+      message: "Data Success",
+      status: 200,
+      data: result[0],
+    };
+    res.json(resObject);
+  },
 };

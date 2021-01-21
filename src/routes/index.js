@@ -12,6 +12,8 @@ const ratingRoute = require("./ratings");
 const orders = require("./orders");
 const authRouter = require("./auth");
 const addressRouter = require("./address");
+const statusRouter = require("./status");
+const conditionRouter = require("./condition");
 
 mainRouter.use("/", welcomeRouter);
 mainRouter.use("/categories", categoriesRouter);
@@ -24,5 +26,7 @@ mainRouter.use("/ratings", ratingRoute);
 mainRouter.use("/orders", orders);
 mainRouter.use("/auth", authRouter);
 mainRouter.use("/address", addressRouter);
+mainRouter.use("/status", statusRouter);
+mainRouter.use("/condition", conditionRouter);
 
 module.exports = mainRouter;

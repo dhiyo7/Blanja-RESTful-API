@@ -18,24 +18,6 @@ module.exports = {
     const { id } = req.params;
     const { query } = req;
     const { keyword } = req.query;
-
-    // Promise.all([productsModel.getProductById(id, res),categoriesModel.getCategoryById(id, res)])
-    // .then((result) => {
-    //   const finalResult = result.data;
-    //   const products = result[0].data;
-    //   console.log('Final ', finalResult);
-    //   console.log('products ', products);
-    //   // if (!finalResult || !products)
-    //   // return res.status(404).json({ msg: "Recipe not found" });
-    //   // finalResult.products = products;
-    //   // res.status(200).json({
-    //   //   msg: "Data Recipe successfully",
-    //   //   status: 200,
-    //   //   data: finalResult,
-    //   // });
-    // })
-    // .catch((err) => res.status(500).json({ msg: err.message }));
-
     // console.log(body);
     console.log(id);
     categoriesModel
