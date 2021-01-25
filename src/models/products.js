@@ -161,6 +161,8 @@ module.exports = {
     });
   },
 
+  
+
   editProduct: (req, params, res, level) => {
     return new Promise((resolve, reject) => {
       const queryString = "UPDATE products SET ? WHERE id = " + params;
@@ -183,14 +185,16 @@ module.exports = {
 
   deleteProduct: (params, level) => {
     return new Promise((resolve, reject) => {
-      const queryString = "DELETE FROM products WHERE id = ?";
+      const queryString = [`DELETE FROM products WHERE id = ${params}`,
+      `DELETE FROM product_sizes WHERE product_id = ${params}`,
+      `DELETE FROM product_colors WHERE product_id = ${params}`];
       if (level < 2) {
         reject({
           msg: "Just Seller can Delete Products",
           status: 401,
         });
       } else {
-        db.query(queryString, [params, level], (err, data) => {
+        db.query(queryString.join(';'), (err, data) => {
           if (!err) {
             resolve(data);
           } else {

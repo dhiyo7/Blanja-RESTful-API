@@ -92,4 +92,27 @@ module.exports = {
       });
     });
   },
+
+  postLogout: (whitelisttoken) => {
+    return new Promise((resolve, reject) => {
+      const queryString = "DELETE FROM token_whitelist WHERE token=?";
+      db.query(queryString, whitelisttoken, (err, data) => {
+        if (data.affectedRows === 0) {
+          reject({
+            status: 404,
+            msg: "token tidak ditemukan, login gagal",
+          });
+        }
+        if (!err) {
+          resolve({
+            msg: `Logout berhasil`,
+          });
+        } else {
+          reject({
+            msg: `Logout gagal`,
+          });
+        }
+      });
+    });
+  },
 };

@@ -34,6 +34,7 @@ module.exports = {
             `,
       ];
       db.query(queryString.join(";"), (err, data) => {
+        // console.log(data);
         if (!err) {
           resolve(data);
         } else {
@@ -43,18 +44,29 @@ module.exports = {
     });
   },
   postReview: (body, user_id, res) => {
-    const newBody = {
-      ...body,
-      user_id: user_id,
+
+    const bodyRating = {
+      product_id : body.product_id, 
+      rating: body.rating
     };
+
+    const bodyReview = {
+      product_id: body.product_id,
+      review: body.review,
+      user_id: user_id
+    };
+    // const newBody = {
+    //   ...body,
+    //   user_id: user_id,
+    // };
     return new Promise((resolve, reject) => {
       const queryCheckUser =
-        "SELECT user_id FROM reviews WHERE user_id=" + user_id;
+        "SELECT user_id FROM reviews WHERE user_id=" + user_id + " AND product_id =" + body.product_id;
       db.query(queryCheckUser, (err, data) => {
-        console.log(data.length);
+        // console.log(data.length);
         if (data.length === 0) {
-          const queryString = "INSERT INTO reviews SET ?";
-          db.query(queryString, newBody, (err, data) => {
+          const queryString = ["INSERT INTO reviews SET ?", "INSERT INTO ratings SET ?"];
+          db.query(queryString.join(';'), [bodyReview, bodyRating], (err, data) => {
             if (!err) {
               resolve(data);
             } else {

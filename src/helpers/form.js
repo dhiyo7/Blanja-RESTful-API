@@ -163,7 +163,7 @@ module.exports = {
     res.json(resObject);
   },
 
-  nestedReviewtById: (res, data) => {
+  nestedReviewById: (res, data) => {
     let productArray = data[0];
     let reviewArray = data[1];
 
@@ -177,7 +177,6 @@ module.exports = {
     reviewArray.reduce((map, row) => {
       const key = row["product_id"];
       map[key];
-      console.log(!map[key].review);
       if (map[key]) {
         if (!map[key].review) {
           map[key].review = [];
