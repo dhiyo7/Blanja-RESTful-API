@@ -17,7 +17,7 @@ module.exports = {
             status: 404,
           });
         } else {
-          form.success(res, data);
+          form.nestedAllProduct(res, data);
         }
       })
       .catch((err) => {
@@ -37,7 +37,8 @@ module.exports = {
             status: 404,
           });
         } else {
-          form.success(res, data[0]);
+          form.nestedProductById(res, data);
+          // console.log(data);
         }
       })
       .catch((err) => {
@@ -51,7 +52,7 @@ module.exports = {
     const level = req.decodedToken.level_id;
     const filepath = JSON.stringify(
       req.files.map(
-        (e) => 'http://192.168.18.29:8007' + "/image" + "/" + e.filename + " "
+        (e) => "http://192.168.18.29:8007" + "/image" + "/" + e.filename + " "
       )
     );
 
@@ -61,7 +62,7 @@ module.exports = {
       user_id: user_id,
       product_photo: filepath,
     };
-    console.log(insertBody); 
+    console.log(insertBody);
     productsModel
       .postProduct(insertBody, level, user_id, res, filepath)
       .then((data) => {
@@ -142,6 +143,23 @@ module.exports = {
       })
       .catch((err) => {
         form.error(res, err);
+      });
+  },
+
+  filterProduct: (req, res) => {
+    const { category, size, color } = req.query;
+
+    productsModel
+      .filterProduct(size, color, category)
+      .then((data) => {
+        form.nestedFilterProduct(res, data);
+      })
+      .catch((error) => {
+        res.status(500).send({
+          message: "Failed",
+          status: 500,
+          error: error,
+        });
       });
   },
 };

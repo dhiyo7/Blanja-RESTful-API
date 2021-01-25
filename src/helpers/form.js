@@ -130,29 +130,225 @@ module.exports = {
     res.json(resObject);
   },
 
-  nestedAllProduct: (res, data) => {
-    let productArray = data[0]
-    let reviewArray = data[1]
-    
-    let products = productArray.reduce((map,row) => {
-      const key = row["id"]
-      map[key] = row
-      row.review = []
-      return map
-    }, {})
+  nestedAllReview: (res, data) => {
+    let productArray = data[0];
+    let reviewArray = data[1];
 
-    reviewArray.reduce((map,row) => {
-      const key = row["product_id"]
-      map[key]
+    let products = productArray.reduce((map, row) => {
+      const key = row["id"];
+      map[key] = row;
+      row.review = [];
+      return map;
+    }, {});
+
+    reviewArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
       console.log(!map[key].review);
+      if (map[key]) {
+        if (!map[key].review) {
+          map[key].review = [];
+        }
+        map[key].review.push(row);
+      }
+      return map;
+    }, products);
+    let result = Object.values(products);
+
+    const resObject = {
+      message: "Data Success",
+      status: 200,
+      data: result,
+    };
+    res.json(resObject);
+  },
+
+  nestedReviewtById: (res, data) => {
+    let productArray = data[0];
+    let reviewArray = data[1];
+
+    let products = productArray.reduce((map, row) => {
+      const key = row["id"];
+      map[key] = row;
+      row.review = [];
+      return map;
+    }, {});
+
+    reviewArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
+      console.log(!map[key].review);
+      if (map[key]) {
+        if (!map[key].review) {
+          map[key].review = [];
+        }
+        map[key].review.push(row);
+      }
+      return map;
+    }, products);
+    let result = Object.values(products);
+
+    const resObject = {
+      message: "Data Success",
+      status: 200,
+      data: result[0],
+    };
+    res.json(resObject);
+  },
+
+  //nested products
+  nestedAllProduct: (res, data) => {
+    let productArray = data.products[0];
+    let sizeArray = data.products[1];
+    let colorArray = data.products[2];
+    let ratingArray = data.products[3];
+
+    let products = productArray.reduce((map, row) => {
+      const key = row["id"];
+      map[key] = row;
+      row.rating = 0;
+      row.sizes = [];
+      row.colors = [];
+      return map;
+    }, {});
+
+    sizeArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].sizes) map[key].sizes = [];
+        map[key].sizes.push(row);
+      }
+      return map;
+    }, products);
+
+    colorArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].colors) map[key].colors = [];
+        map[key].colors.push(row);
+      }
+      return map;
+    }, products);
+
+    ratingArray.reduce((map, row) =>{
+      const key = row['product_id'];
+      map[key]
       if(map[key]){
-        if(!map[key].review){ 
-          map[key].review = []
-        };
-        map[key].review.push(row)
+        if(!map[key].rating) map[key].rating = 0;
+      map[key].rating = row['rating'];
       }
       return map
-    }, products)
+    }, products);
+
+    let result = Object.values(products);
+    
+    let newResult = {
+      products: result,
+      pageInfo: data.pageInfo
+    }
+
+    const resObject = {
+      message: "Data Success",
+      status: 200,
+      data: newResult,
+    };
+
+    res.json(resObject);
+  },
+
+  nestedProductById: (res, data) => {
+    
+    let productArray = data[0];
+    let sizeArray = data[1];
+    let colorArray = data[2];
+    let ratingArray = data[3];
+
+    let products = productArray.reduce((map, row) => {
+      const key = row["id"];
+      map[key] = row;
+      row.rating = 0;
+      row.sizes = [];
+      row.colors = [];
+      return map;
+    }, {});
+
+    sizeArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].sizes) map[key].sizes = [];
+        map[key].sizes.push(row);
+      }
+      return map;
+    }, products);
+
+    colorArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].colors) map[key].colors = [];
+        map[key].colors.push(row);
+      }
+      return map;
+    }, products);
+
+    ratingArray.reduce((map, row) =>{
+      const key = row['product_id'];
+      map[key]
+      if(map[key]){
+        if(!map[key].rating) map[key].rating = 0;
+      map[key].rating = row['rating'];
+      }
+      return map
+    }, products);
+
+    let result = Object.values(products);
+    
+
+    const resObject = {
+      message: "Data Success",
+      status: 200,
+      data: result[0],
+    };
+
+    res.json(resObject);
+  },
+
+  nestedFilterProduct: (res, data) => {
+    let productArray = data[0];
+    let sizeArray = data[1];
+    let colorArray = data[2];
+
+    let products = productArray.reduce((map, row) => {
+      const key = row['id'];
+      map[key] = row
+      row.sizes = []
+      row.colors = []
+      return map
+    }, {});
+
+    sizeArray.reduce((map, row) => {
+      const key = row['product_id'];
+      map[key]
+      if(map[key]){
+        if(!map[key].sizes) map[key].sizes = []
+        map[key].sizes.push(row);
+      }
+      return map;
+    }, products);
+
+    colorArray.reduce((map, row) => {
+      const key = row['product_id'];
+      map[key]
+      if(map[key]){
+        if(!map[key].colors) map[key].colors = []
+        map[key].colors.push(row);
+      }
+      return map;
+    }, products);
+
     let result = Object.values(products);
 
     const resObject = {
@@ -160,39 +356,7 @@ module.exports = {
       status: 200,
       data: result
     };
-    res.json(resObject);
-  },
-  
-  nestedProductById: (res, data) => {
-    let productArray = data[0]
-    let reviewArray = data[1]
-    
-    let products = productArray.reduce((map,row) => {
-      const key = row["id"]
-      map[key] = row
-      row.review = []
-      return map
-    }, {})
 
-    reviewArray.reduce((map,row) => {
-      const key = row["product_id"]
-      map[key]
-      console.log(!map[key].review);
-      if(map[key]){
-        if(!map[key].review){ 
-          map[key].review = []
-        };
-        map[key].review.push(row)
-      }
-      return map
-    }, products)
-    let result = Object.values(products);
-
-    const resObject = {
-      message: "Data Success",
-      status: 200,
-      data: result[0]
-    };
     res.json(resObject);
   }
 };

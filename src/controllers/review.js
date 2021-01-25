@@ -6,7 +6,7 @@ module.exports = {
     reviewModel
       .getAllReview()
       .then((data) => {
-        form.nestedAllProduct(res, data);
+        form.nestedAllReview(res, data);
       })
       .catch((error) => {
         res.status(500).send({
@@ -22,7 +22,7 @@ module.exports = {
     reviewModel
       .getReviewById(id)
       .then((data) => {
-        form.nestedProductById(res, data);
+        form.nestedReviewById(res, data);
       })
       .catch((error) => {
         res.status(500).send({

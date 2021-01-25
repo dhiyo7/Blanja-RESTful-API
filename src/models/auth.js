@@ -34,7 +34,8 @@ module.exports = {
   postLogin: (body) => {
     return new Promise((resolve, reject) => {
       const { email, password } = body;
-      const queryString = "SELECT id, level_id, email, full_name, password FROM users where email = ?";
+      const queryString =
+        "SELECT id, level_id, email, full_name, password FROM users where email = ?";
       db.query(queryString, email, (err, data) => {
         if (err) {
           reject({
@@ -77,8 +78,14 @@ module.exports = {
               const secret = process.env.SECRET_KEY;
               // const token = jwt.sign({email: data[0].email, level_id : data[0].level_id} , secret);
               const token = jwt.sign(payload, secret);
-              resolve({token, full_name:data[0].full_name, email: data[0].email, user_id: data[0].id, level: data[0].level_id});
-              // console.log({id: data[0].id});
+              resolve({
+                token,
+                full_name: data[0].full_name,
+                email: data[0].email,
+                user_id: data[0].id,
+                level: data[0].level_id,
+              });
+              console.log(resolve);
             }
           });
         }
