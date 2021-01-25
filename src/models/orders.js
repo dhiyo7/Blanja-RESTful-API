@@ -4,7 +4,10 @@ module.exports = {
   getAllOrdersHistory: (level, user_id) => {
     return new Promise((resolve, reject) => {
       const queryString = [
-        "SELECT * FROM orders WHERE user_id =" + user_id,
+        // "SELECT * FROM orders WHERE user_id =" + user_id,
+        `SELECT o.id, o.transaction_code, o.total, o.user_id, ac.address, o.created_at, o.updated_at FROM orders as o 
+        INNER JOIN address_customer as ac ON o.id_address = ac.id_address
+        WHERE o.user_id =${user_id}`,
         "SELECT od.order_id, p.product_name, c.category_name, cd.conditions, st.name, od.product_qty, od.sub_total_item FROM order_details as od INNER JOIN products as p ON od.product_id = p.id INNER JOIN categories as c ON p.category_id = c.id_categories  INNER JOIN conditions as cd ON p.condition_id = cd.id INNER JOIN status_product as st ON p.status_product_id = st.id ",
       ];
       db.query(queryString.join(";"), (err, data) => {
@@ -21,7 +24,9 @@ module.exports = {
   getOrderById: (order_id, user_id) => {
     return new Promise((resolve, reject) => {
       const queryString = [
-        `SELECT * FROM orders WHERE id = ${order_id} AND user_id = ${user_id}`,
+        `SELECT o.id, o.transaction_code, o.total, o.user_id, ac.address, o.created_at, o.updated_at FROM orders as o 
+        INNER JOIN address_customer as ac ON o.id_address = ac.id_address
+        WHERE o.id=${order_id} AND o.user_id =${user_id}`,
         `SELECT od.order_id, p.id as product_id, p.product_name, c.category_name, cd.conditions, st.name, od.product_qty, od.sub_total_item FROM order_details as od INNER JOIN products as p ON od.product_id = p.id INNER JOIN categories as c ON p.category_id = c.id_categories INNER JOIN conditions as cd ON p.condition_id = cd.id INNER JOIN status_product as st ON p.status_product_id = st.id WHERE order_id=${order_id}`,
       ];
       db.query(queryString.join(";"), (err, data) => {
@@ -46,6 +51,7 @@ module.exports = {
 
     const bodyOrder = {
       transaction_code: body.transaction_code,
+      id_address: body.id_address,
       total: newTotal,
       user_id: user_id,
       // level: level

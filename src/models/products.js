@@ -66,15 +66,6 @@ module.exports = {
 
   getProductById: (params) => {
     return new Promise((resolve, reject) => {
-      // const queryString = `SELECT *, AVG(rating) as rating FROM products
-      //   INNER JOIN ratings ON products.id = ratings.product_id WHERE products.id = ${params} GROUP BY products.id`;
-      // const queryString = `SELECT p.id, p.product_name, c.category_name, s.size, cl.color_hexa, cd.conditions, p.product_price, p.product_qty, p.product_desc, p.product_photo,  AVG(rating) as rating FROM products as p
-      // INNER JOIN categories as c ON p.category_id = c.id_categories
-      // INNER JOIN size as s ON p.size_id = s.id
-      // INNER JOIN colors as cl ON p.color_id = cl.id
-      // INNER JOIN conditions as cd ON p.condition_id = cd.id
-      // INNER JOIN ratings ON p.id = ratings.product_id WHERE p.id = ${params}
-      // GROUP BY p.id`;
       const queryString = [
         `SELECT p.id, p.product_name, c.category_name, p.product_price, p.product_qty, p.product_desc, p.product_photo, p.user_id FROM products as p
             INNER JOIN categories as c ON p.category_id = c.id_categories WHERE id = ${params}`,
@@ -82,7 +73,7 @@ module.exports = {
         `SELECT * FROM product_colors as pc INNER JOIN colors as c ON c.id = pc.color_id WHERE product_id = ${params}`,
         `SELECT product_id, AVG(rating) as rating FROM ratings WHERE product_id = ${params} GROUP BY product_id`,
       ];
-      db.query(queryString.join(';'), (err, data) => {
+      db.query(queryString.join(";"), (err, data) => {
         // console.log(data);
         if (!err) {
           resolve(data);
@@ -123,15 +114,15 @@ module.exports = {
 
             const bodySize = {
               product_id: data.insertId,
-              size_id : req.sizes
+              size_id: req.sizes,
             };
 
             db.query(queryStringSize, bodySize);
 
             const bodyColor = {
               product_id: data.insertId,
-              color_id: req.colors
-            }
+              color_id: req.colors,
+            };
 
             db.query(queryStringColor, bodyColor);
 
@@ -161,8 +152,6 @@ module.exports = {
     });
   },
 
-  
-
   editProduct: (req, params, res, level) => {
     return new Promise((resolve, reject) => {
       const queryString = "UPDATE products SET ? WHERE id = " + params;
@@ -185,16 +174,18 @@ module.exports = {
 
   deleteProduct: (params, level) => {
     return new Promise((resolve, reject) => {
-      const queryString = [`DELETE FROM products WHERE id = ${params}`,
-      `DELETE FROM product_sizes WHERE product_id = ${params}`,
-      `DELETE FROM product_colors WHERE product_id = ${params}`];
+      const queryString = [
+        `DELETE FROM products WHERE id = ${params}`,
+        `DELETE FROM product_sizes WHERE product_id = ${params}`,
+        `DELETE FROM product_colors WHERE product_id = ${params}`,
+      ];
       if (level < 2) {
         reject({
           msg: "Just Seller can Delete Products",
           status: 401,
         });
       } else {
-        db.query(queryString.join(';'), (err, data) => {
+        db.query(queryString.join(";"), (err, data) => {
           if (!err) {
             resolve(data);
           } else {
@@ -207,14 +198,21 @@ module.exports = {
 
   getProductByUserId: (user_id) => {
     return new Promise((resolve, reject) => {
-      const queryString = `SELECT p.id, p.product_name, c.category_name, s.size, cl.color_hexa, cd.conditions, p.product_price, p.product_qty, p.product_desc, p.product_photo,  AVG(rating) as rating FROM products as p
-      INNER JOIN categories as c ON p.category_id = c.id_categories
-      INNER JOIN size as s ON p.size_id = s.id
-      INNER JOIN colors as cl ON p.color_id = cl.id
-      INNER JOIN conditions as cd ON p.condition_id = cd.id
-      INNER JOIN ratings ON p.id = ratings.product_id
-      WHERE p.user_id = ? GROUP BY p.id `;
-      db.query(queryString, user_id, (err, data) => {
+      // const queryString = `SELECT p.id, p.product_name, c.category_name, s.size, cl.color_hexa, cd.conditions, p.product_price, p.product_qty, p.product_desc, p.product_photo,  AVG(rating) as rating FROM products as p
+      // INNER JOIN categories as c ON p.category_id = c.id_categories
+      // INNER JOIN conditions as cd ON p.condition_id = cd.id
+      // INNER JOIN ratings ON p.id = ratings.product_id
+      // WHERE p.user_id = ? GROUP BY p.id `;
+      const queryString = [
+        `SELECT p.id, p.product_name, c.category_name, p.product_price, p.product_qty, p.product_desc, p.product_photo, p.user_id FROM products as p
+        INNER JOIN categories as c ON p.category_id = c.id_categories 
+        WHERE user_id=${user_id}`,
+        `SELECT * FROM product_sizes as ps INNER JOIN size as s ON s.id = ps.size_id`,
+        `SELECT * FROM product_colors as pc INNER JOIN colors as c ON c.id = pc.color_id`,
+        `SELECT product_id, AVG(rating) as rating FROM ratings GROUP BY product_id`,
+      ];
+      db.query(queryString.join(";"), (err, data) => {
+        // console.log(data);
         if (!err) {
           resolve(data);
         } else {
@@ -226,22 +224,28 @@ module.exports = {
 
   filterProduct: (size, color, category) => {
     return new Promise((resolve, reject) => {
-        const queryStringFilter = [`SELECT p.id, p.product_name, p.condition_id, p.product_price, p.product_desc, p.product_photo, p.user_id, p.status_product_id FROM products AS p 
+      const queryStringFilter = [
+        `SELECT p.id, p.product_name, p.condition_id, p.product_price, p.product_desc, p.product_photo, p.user_id, p.status_product_id FROM products AS p 
         INNER JOIN product_sizes as s ON s.product_id = p.id 
         INNER JOIN product_colors as cl ON cl.product_id = p.id 
         LEFT JOIN categories as c ON c.id_categories = p.id 
         WHERE p.category_id = ? AND s.size_id = ? AND cl.color_id = ?`,
         `SELECT * FROM product_sizes`,
-        `SELECT * FROM product_colors`];
+        `SELECT * FROM product_colors`,
+      ];
 
-        db.query(queryStringFilter.join(';'), [category, size, color], (err, data) => {
-            if(!err){
-                resolve(data);
-            }else{
-                console.log(err);
-                reject(err);
-            }
-        })
-    })
-}
+      db.query(
+        queryStringFilter.join(";"),
+        [category, size, color],
+        (err, data) => {
+          if (!err) {
+            resolve(data);
+          } else {
+            console.log(err);
+            reject(err);
+          }
+        }
+      );
+    });
+  },
 };

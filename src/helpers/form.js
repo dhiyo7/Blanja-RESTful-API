@@ -71,14 +71,15 @@ module.exports = {
 
     let orders = orderArray.reduce((map, row) => {
       const key = row["id"];
-      console.log("order key = " + key);
       map[key] = row;
+      row.order_detail = []
       return map;
     }, {});
 
     orderDetailArray.reduce((map, row) => {
       const key = row["order_id"];
       map[key];
+      console.log(map[key]);
       if (map[key]) {
         if (!map[key].order_detail) map[key].order_detail = [];
         map[key].order_detail.push(row);
@@ -231,22 +232,22 @@ module.exports = {
       return map;
     }, products);
 
-    ratingArray.reduce((map, row) =>{
-      const key = row['product_id'];
-      map[key]
-      if(map[key]){
-        if(!map[key].rating) map[key].rating = 0;
-      map[key].rating = row['rating'];
+    ratingArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].rating) map[key].rating = 0;
+        map[key].rating = row["rating"];
       }
-      return map
+      return map;
     }, products);
 
     let result = Object.values(products);
-    
+
     let newResult = {
       products: result,
-      pageInfo: data.pageInfo
-    }
+      pageInfo: data.pageInfo,
+    };
 
     const resObject = {
       message: "Data Success",
@@ -258,7 +259,6 @@ module.exports = {
   },
 
   nestedProductById: (res, data) => {
-    
     let productArray = data[0];
     let sizeArray = data[1];
     let colorArray = data[2];
@@ -293,23 +293,78 @@ module.exports = {
       return map;
     }, products);
 
-    ratingArray.reduce((map, row) =>{
-      const key = row['product_id'];
-      map[key]
-      if(map[key]){
-        if(!map[key].rating) map[key].rating = 0;
-      map[key].rating = row['rating'];
+    ratingArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].rating) map[key].rating = 0;
+        map[key].rating = row["rating"];
       }
-      return map
+      return map;
     }, products);
 
     let result = Object.values(products);
-    
 
     const resObject = {
       message: "Data Success",
       status: 200,
       data: result[0],
+    };
+
+    res.json(resObject);
+  },
+
+  nestedProductByUser: (res, data) => {
+    let productArray = data[0];
+    let sizeArray = data[1];
+    let colorArray = data[2];
+    let ratingArray = data[3];
+
+    let products = productArray.reduce((map, row) => {
+      const key = row["id"];
+      map[key] = row;
+      row.rating = 0;
+      row.sizes = [];
+      row.colors = [];
+      return map;
+    }, {});
+
+    sizeArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].sizes) map[key].sizes = [];
+        map[key].sizes.push(row);
+      }
+      return map;
+    }, products);
+
+    colorArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].colors) map[key].colors = [];
+        map[key].colors.push(row);
+      }
+      return map;
+    }, products);
+
+    ratingArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].rating) map[key].rating = 0;
+        map[key].rating = row["rating"];
+      }
+      return map;
+    }, products);
+
+    let result = Object.values(products);
+
+    const resObject = {
+      message: "Data Success",
+      status: 200,
+      data: result,
     };
 
     res.json(resObject);
@@ -321,28 +376,28 @@ module.exports = {
     let colorArray = data[2];
 
     let products = productArray.reduce((map, row) => {
-      const key = row['id'];
-      map[key] = row
-      row.sizes = []
-      row.colors = []
-      return map
+      const key = row["id"];
+      map[key] = row;
+      row.sizes = [];
+      row.colors = [];
+      return map;
     }, {});
 
     sizeArray.reduce((map, row) => {
-      const key = row['product_id'];
-      map[key]
-      if(map[key]){
-        if(!map[key].sizes) map[key].sizes = []
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].sizes) map[key].sizes = [];
         map[key].sizes.push(row);
       }
       return map;
     }, products);
 
     colorArray.reduce((map, row) => {
-      const key = row['product_id'];
-      map[key]
-      if(map[key]){
-        if(!map[key].colors) map[key].colors = []
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].colors) map[key].colors = [];
         map[key].colors.push(row);
       }
       return map;
@@ -353,9 +408,9 @@ module.exports = {
     const resObject = {
       message: "Data Success",
       status: 200,
-      data: result
+      data: result,
     };
 
     res.json(resObject);
-  }
+  },
 };

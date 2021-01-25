@@ -138,8 +138,8 @@ module.exports = {
     const user_id = req.decodedToken.id;
     productsModel
       .getProductByUserId(user_id)
-      .then((data) => {
-        form.success(res, data);
+      .then((data) => {;
+        form.nestedProductByUser(res, data);
       })
       .catch((err) => {
         form.error(res, err);

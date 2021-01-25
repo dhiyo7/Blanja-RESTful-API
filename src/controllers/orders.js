@@ -13,6 +13,7 @@ module.exports = {
       .getAllOrdersHistory(level, user_id)
       .then((data) => {
         form.nestedAll(res, data);
+        console.log(data);
       })
       .catch((error) => {
         res.status(500).send({
@@ -45,18 +46,13 @@ module.exports = {
     const { body } = req;
     const user_id = req.decodedToken.id;
     const level = req.decodedToken.level_id;
-    const insertBody = { ...body };
 
-    // console.log("reqKontol ",req);
-    console.log("data Body ", insertBody);
-    console.log("userID ", user_id);
     orderModel
-      .postOrders(insertBody, level, user_id)
+      .postOrders(body, level, user_id)
       .then((data) => {
-        console.log("KONTOL ", data.insertId);
         const newResObj = {
           id: data.insertId,
-          ...insertBody,
+          ...body,
         };
         form.success(res, newResObj);
       })
