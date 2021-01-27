@@ -16,6 +16,9 @@ module.exports = {
           username: body.username,
         },
       });
+    })
+    .catch((err) => {
+      res.status(403).send(err);
     });
   },
 

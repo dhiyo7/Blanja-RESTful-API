@@ -86,7 +86,7 @@ module.exports = {
 
   postProduct: (req, level, user_id, filepath) => {
     return new Promise((resolve, reject) => {
-      // console.log(req);
+      console.log(req);
       const bodyProduct = {
         product_name: req.product_name,
         category_id: req.category_id,
@@ -112,35 +112,35 @@ module.exports = {
             const queryStringSize = "INSERT INTO product_sizes SET ?";
             const queryStringColor = "INSERT INTO product_colors SET ?";
 
-            const bodySize = {
-              product_id: data.insertId,
-              size_id: req.sizes,
-            };
+            // const bodySize = {
+            //   product_id: data.insertId,
+            //   size_id: req.sizes,
+            // };
 
-            db.query(queryStringSize, bodySize);
+            // db.query(queryStringSize, bodySize);
 
-            const bodyColor = {
-              product_id: data.insertId,
-              color_id: req.colors,
-            };
+            // const bodyColor = {
+            //   product_id: data.insertId,
+            //   color_id: req.colors,
+            // };
 
-            db.query(queryStringColor, bodyColor);
+            // db.query(queryStringColor, bodyColor);
 
             // Ini digunakan waktu udah masuk ke react native
-            // req.sizes.map((size) => {
-            //   const bodySize = {
-            //     product_id: data.insertId,
-            //     ...size,
-            //   };
-            //   db.query(queryStringSize, bodySize);
-            // });
-            // req.colors.map((color) => {
-            //   const bodyColor = {
-            //     product_id: data.insertId,
-            //     ...color,
-            //   };
-            //   db.query(queryStringColor, bodyColor);
-            // });
+            req.sizes.map((size) => {
+              const bodySize = {
+                product_id: data.insertId,
+                ...size,
+              };
+              db.query(queryStringSize, bodySize);
+            });
+            req.colors.map((color) => {
+              const bodyColor = {
+                product_id: data.insertId,
+                ...color,
+              };
+              db.query(queryStringColor, bodyColor);
+            });
             if (!err) {
               resolve(data);
             } else {

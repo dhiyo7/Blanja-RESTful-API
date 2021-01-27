@@ -5,29 +5,41 @@ const jwt = require("jsonwebtoken");
 module.exports = {
   postNewUser: (body) => {
     return new Promise((resolve, reject) => {
-      const saltRounds = 10;
-      bcrypt.genSalt(saltRounds, (err, salt) => {
-        if (err) {
-          reject(err);
-        }
-        bcrypt.hash(body.password, salt, (err, hashedPassword) => {
-          if (err) {
-            reject(err);
-          }
-          const newBody = {
-            ...body,
-            password: hashedPassword,
-          };
-          const queryString = "INSERT INTO users SET ?";
-          db.query(queryString, newBody, (err, data) => {
-            if (!err) {
-              resolve(data);
-            } else {
+      const email = body.email;
+      const queryCheckEmail = 'SELECT email FROM users WHERE email=?';
+      db.query(queryCheckEmail, email, (err, data) => {
+        if(!data[0]){
+          const saltRounds = 10;
+          bcrypt.genSalt(saltRounds, (err, salt) => {
+            if (err) {
               reject(err);
             }
+            bcrypt.hash(body.password, salt, (err, hashedPassword) => {
+              if (err) {
+                reject(err);
+              }
+              const newBody = {
+                ...body,
+                password: hashedPassword,
+              };
+              const queryString = "INSERT INTO users SET ?";
+              db.query(queryString, newBody, (err, data) => {
+                if (!err) {
+                  resolve(data);
+                } else {
+                  reject(err);
+                }
+              });
+            });
           });
-        });
-      });
+        }else{
+          reject({
+            message: 'Email is already exists!',
+            status: 403
+          });
+        }
+      })
+      
     });
   },
 
