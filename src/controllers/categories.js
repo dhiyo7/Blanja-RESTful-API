@@ -30,6 +30,7 @@ module.exports = {
           });
         } else {
           form.nested(res, data);
+          // console.log('Cek ',data);
         }
       })
       .catch((err) => {

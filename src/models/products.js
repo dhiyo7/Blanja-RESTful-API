@@ -107,37 +107,25 @@ module.exports = {
       } else {
         db.query(
           queryString,
-          [bodyProduct, level, user_id, filepath],
+          [bodyProduct],
           (err, data) => {
             const queryStringSize = "INSERT INTO product_sizes SET ?";
             const queryStringColor = "INSERT INTO product_colors SET ?";
 
-            // const bodySize = {
-            //   product_id: data.insertId,
-            //   size_id: req.sizes,
-            // };
-
-            // db.query(queryStringSize, bodySize);
-
-            // const bodyColor = {
-            //   product_id: data.insertId,
-            //   color_id: req.colors,
-            // };
-
-            // db.query(queryStringColor, bodyColor);
-
             // Ini digunakan waktu udah masuk ke react native
+
             req.sizes.map((size) => {
               const bodySize = {
                 product_id: data.insertId,
-                ...size,
+                size_id: size,
               };
               db.query(queryStringSize, bodySize);
             });
+
             req.colors.map((color) => {
               const bodyColor = {
                 product_id: data.insertId,
-                ...color,
+                color_id: color,
               };
               db.query(queryStringColor, bodyColor);
             });

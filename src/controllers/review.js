@@ -45,13 +45,29 @@ module.exports = {
     const user_id = req.decodedToken.id;
 
     reviewModel
-      .postReview(body, user_id,res)
+      .postReview(body, user_id, res)
       .then((data) => {
         res.status(200).send({
           message: "success",
           status: true,
           data: data,
         });
+      })
+      .catch((error) => {
+        res.status(500).send({
+          message: "failed",
+          status: false,
+          error: error,
+        });
+      });
+  },
+
+  getProductById: (req, res) => {
+    const { id } = req.params;
+    reviewModel
+      .getProductById(id)
+      .then((data) => {
+        form.nestedReviewByProductId(res, data);
       })
       .catch((error) => {
         res.status(500).send({

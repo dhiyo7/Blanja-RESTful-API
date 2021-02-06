@@ -5,11 +5,11 @@ const cors = require("cors");
 
 const mainRouter = require("./src/routes/index");
 const app = express();
-const port = 8007;
+// const port = 8007;
 // listen port
-app.listen(port, () => {
-  console.log(`Server is running at port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Server is running at port ${port}`);
+// });
 
 app.use(cors());
 
@@ -34,3 +34,5 @@ app.use(function (req, res) {
     status: 404,
   });
 });
+
+module.exports = app;
