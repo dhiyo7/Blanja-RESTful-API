@@ -1,3 +1,4 @@
+require("dotenv").config();
 const mysql = require("mysql");
 const app = require("./index");
 const http = require("http");
@@ -38,7 +39,7 @@ db.connect((err) => {
   console.log("MySQL connected...");
 });
 
-const port = 8007;
+const port = process.env.PORT || 8007;
 
 server.listen(port, () => {
   console.log(`Server started on port ${port}`);
