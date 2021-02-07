@@ -25,10 +25,10 @@ io.on("connection", (socket) => {
 
 // Create connection
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "dhiyo007",
-  database: "new_blanja_db",
+  host: process.env.HOST,
+  user: process.env.user,
+  password: process.env.password,
+  database: process.env.DB,
 });
 
 // Connect
