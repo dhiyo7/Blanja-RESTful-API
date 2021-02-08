@@ -169,7 +169,7 @@ module.exports = {
                       <h1> OTP CODE from blanja Team </h1>
                       <p> Hello, this is you OTP code</p>
                       <h2><strong>${otpCode}</strong></h2> 
-                      <p> Use it to reset PIN/Password </p>
+                      <p> Use it to reset Password </p>
                       `,
                     };
                     transporter.sendMail(mailOptions, (err, data) => {
