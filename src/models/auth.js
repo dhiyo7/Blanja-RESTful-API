@@ -1,14 +1,16 @@
 const db = require("../config/mySQL");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const otp = require("otp-generator");
+const nodemailer = require("nodemailer");
 
 module.exports = {
   postNewUser: (body) => {
     return new Promise((resolve, reject) => {
       const email = body.email;
-      const queryCheckEmail = 'SELECT email FROM users WHERE email=?';
+      const queryCheckEmail = "SELECT email FROM users WHERE email=?";
       db.query(queryCheckEmail, email, (err, data) => {
-        if(!data[0]){
+        if (!data[0]) {
           const saltRounds = 10;
           bcrypt.genSalt(saltRounds, (err, salt) => {
             if (err) {
@@ -32,14 +34,13 @@ module.exports = {
               });
             });
           });
-        }else{
+        } else {
           reject({
-            message: 'Email is already exists!',
-            status: 403
+            message: "Email is already exists!",
+            status: 403,
           });
         }
-      })
-      
+      });
     });
   },
 
@@ -127,4 +128,148 @@ module.exports = {
       });
     });
   },
+
+  // send otp
+  forgotPass: (email) => {
+    return new Promise((resolve, reject) => {
+      const getUser = `SELECT email FROM users WHERE email = ?`;
+      db.query(getUser, email, (err, data) => {
+        if (!err) {
+          if (data[0]) {
+            const delOtp = `DELETE FROM otp_reset WHERE email = ?`;
+            db.query(delOtp, email, (err, data) => {
+              if (!err) {
+                const otpCode = otp.generate(6, {
+                  alphabets: true,
+                  upperCase: true,
+                  specialChars: false,
+                });
+                const dataResend = {
+                  email: email,
+                  otp: otpCode,
+                };
+                const queryString = `INSERT INTO otp_reset SET ?`;
+                db.query(queryString, dataResend, (err, data) => {
+                  if (!err) {
+                    let transporter = nodemailer.createTransport({
+                      service: "gmail",
+                      host: "smtp.gmail.com",
+                      port: 578,
+                      secure: false,
+                      auth: {
+                        user: process.env.USER_EMAIL,
+                        pass: process.env.PASS_EMAIL,
+                      },
+                    });
+                    let mailOptions = {
+                      from: "Blanja Team <blanja@arkademy.mail.com>",
+                      to: email,
+                      subject: "OTP Code Reset Password",
+                      html: ` 
+                      <h1> OTP CODE from blanja Team </h1>
+                      <p> Hello, this is you OTP code</p>
+                      <h2><strong>${otpCode}</strong></h2> 
+                      <p> Use it to reset PIN/Password </p>
+                      `,
+                    };
+                    transporter.sendMail(mailOptions, (err, data) => {
+                      if (err) {
+                        console.log("its error: ", err);
+                      } else {
+                        console.log("success sent");
+                        resolve({
+                          status: 200,
+                          message: `Kode OTP telah dikirim ke email anda`,
+                        });
+                      }
+                    });
+                  } else {
+                    reject({
+                      status: 500,
+                      message: `Internal server err`,
+                      details: err,
+                    });
+                  }
+                });
+              } else {
+                reject({
+                  status: 404,
+                  message: `Email not found`,
+                });
+              }
+            });
+          } else {
+            reject({
+              status: 500,
+              message: `Internal server err`,
+              details: err,
+            });
+          }
+        }
+      });
+    });
+  },
+
+  //check OTP
+  checkOTP: (email, otp) => {
+    return new Promise((resolve, reject) => {
+      const queryString = `SELECT * FROM otp_reset WHERE email = ? AND otp = ?`
+      db.query(queryString, [email, otp], (err, data) => {
+        if(!err) {
+          if(data[0]) {
+            const qs = `DELETE FROM otp_reset WHERE email = ? and otp = ?`
+            db.query(qs, [email, otp], (err, data) => {
+              if (!err) {
+                resolve({
+                  status: 200,
+                  message: `reset your password`,
+                  email: email,
+                })
+              } else {
+                reject({
+                  status: 500,
+                  message: `Internal server error`,
+                  details: err,
+                })
+              }
+            })
+          } else {
+            reject({
+              status: 404,
+              message: `OTP code not match`
+            })
+          }
+        } else {
+          reject({
+            status: 500,
+            message: `Internal server error`,
+            details: err,
+          })
+        }
+      })
+    })
+  },
+
+  resetPassword: (body) => {
+    return new Promise((resolve, reject) => {
+      const saltRounds = Math.floor(Math.random() * 10) + 1
+      bcrypt.hash(body.password, saltRounds, (err, hashedPassword) => {
+        const queryString = `UPDATE users SET password = ? WHERE email = ?`
+        db.query(queryString, [hashedPassword, body.email], (err, data) => {
+          if (!err) {
+            resolve({
+              status: 200,
+              message: 'Password successfully change'
+            })
+          } else {
+            reject({
+              status: 500,
+              message: 'Internal server err',
+              details: err,
+            })
+          }
+        })
+      })
+    })
+  }
 };
