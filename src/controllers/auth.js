@@ -55,4 +55,31 @@ module.exports = {
         });
     }
   },
+
+  forgotEmail: (req, res) => {
+    const { email } = req.body
+    authModel.forgotPass(email).then((result) => {
+      form.success(res, result)
+    }).catch((err) => {
+      form.error(res, err)
+    })
+  },
+
+  checkOTP: (req, res) => {
+    const { email, otp } = req.body
+    authModel.checkOTP(email, otp).then((result) => {
+      form.success(res, result)
+    }).catch((err) => {
+      form.error(res, err)
+    })
+  },
+
+  resetPassword: (req, res) => {
+    const { body } = req
+    authModel.resetPassword(body).then((result) => {
+      form.success(res, result)
+    }).catch((err) => {
+      form.error(res, err)
+    })
+  }
 };
