@@ -17,7 +17,8 @@ io.on("connection", (socket) => {
   socket.on("chat message", (msg, id_recepient) => {
     console.log(msg);
     //console.log(msg.sender);
-    console.log(id_recepient);
+    console.log('id_recepient',id_recepient);
+    console.log('id',id);
     io.to(id_recepient).to(id).emit("chat message", msg);
   });
 });
@@ -25,10 +26,10 @@ io.on("connection", (socket) => {
 
 // Create connection
 const db = mysql.createConnection({
-  host: process.env.HOST,
-  user: process.env.user,
-  password: process.env.password,
-  database: process.env.DB,
+  host: 'localhost',
+  user: 'root',
+  password: 'dhiyo007',
+  database: 'new_blanja_db',
 });
 
 // Connect
