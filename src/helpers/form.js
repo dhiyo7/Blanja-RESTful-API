@@ -228,20 +228,24 @@ module.exports = {
   },
 
   //nested products
-  nestedAllProduct: (res, data) => {
+  nestedAllProduct: (res, data, keyword) => {
     let productArray = data.products[0];
+    // console.log(productArray);
     let sizeArray = data.products[1];
     let colorArray = data.products[2];
-    let ratingArray = data.products[3];
+
+    console.log();
 
     let products = productArray.reduce((map, row) => {
+      // console.log(row.rating);
       const key = row["id"];
       map[key] = row;
-      row.rating = 0;
       row.sizes = [];
       row.colors = [];
       return map;
     }, {});
+
+    console.log(products);
 
     sizeArray.reduce((map, row) => {
       const key = row["product_id"];
@@ -262,18 +266,31 @@ module.exports = {
       }
       return map;
     }, products);
-
-    ratingArray.reduce((map, row) => {
-      const key = row["product_id"];
-      map[key];
-      if (map[key]) {
-        if (!map[key].rating) map[key].rating = 0;
-        map[key].rating = row["rating"];
-      }
-      return map;
-    }, products);
-
     let result = Object.values(products);
+    
+    let newKeyword = keyword.split(' ');
+
+    if(newKeyword[1] === 'DESC'){
+      result.sort((a,b) => {
+        if (a[newKeyword[0]] < b[newKeyword[0]]) {
+          return 1;
+        }
+        if (a[newKeyword[0]] > b[newKeyword[0]]) {
+          return -1;
+        }
+        return 0;
+      })
+    }else{
+      result.sort((a,b) => {
+        if (a[newKeyword[0]] < b[newKeyword[0]]) {
+          return -1;
+        }
+        if (a[newKeyword[0]] > b[newKeyword[0]]) {
+          return 1;
+        }
+        return 0;
+      })
+    }
 
     let newResult = {
       products: result,

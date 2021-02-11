@@ -12,6 +12,7 @@ productsRouter.get("/user", checkToken, productsController.getProductByUserId);
 productsRouter.get("/:id", productsController.getProductById);
 productsRouter.post("/", checkToken, uploadImage, productsController.postProduct);
 productsRouter.put("/:id", checkToken, uploadImage, productsController.editProduct);
+productsRouter.put('/photo/:id', checkToken, uploadImage, productsController.editProductPhotos)
 productsRouter.delete("/:id", checkToken, productsController.deleteProduct);
 
 module.exports = productsRouter;

@@ -7,7 +7,7 @@ module.exports = {
     const { keyword } = req.query;
     const limit = Number(query.limit) || 5;
     const page = Number(query.page) || 1;
-    const offset = (page - 1) * limit || 0;
+    const offset = (page - 1) * limit || 1;
     productsModel
       .productAll(limit, offset, page, keyword)
       .then((data) => {
@@ -17,7 +17,7 @@ module.exports = {
             status: 404,
           });
         } else {
-          form.nestedAllProduct(res, data);
+          form.nestedAllProduct(res, data[0],data[1]);
         }
       })
       .catch((err) => {
@@ -83,16 +83,15 @@ module.exports = {
     const { body } = req;
     const { id } = req.params;
     const level = req.decodedToken.level_id;
-    // console.log(level);
-    const singlePath = JSON.stringify(
-      req.files.map(
-        (e) => "http://localhost:8007" + "/image" + "/" + e.filename + " "
-      )
-    );
-    const insertBody = { ...body, product_photo: singlePath };
-
+    
+    const sizes = body.sizes;
+    const colors = body.colors
+    delete body.sizes;
+    delete body.colors;
+    const insertBody = { ...body };
+    // console.log(insertBody);
     productsModel
-      .editProduct(insertBody, id, res, level)
+      .editProduct(insertBody, id, res, level, sizes, colors)
       .then((data) => {
         if (data.affectedRows === 0) {
           res.status(404).json({
@@ -110,6 +109,32 @@ module.exports = {
       .catch((err) => {
         form.error(res, err);
       });
+  },
+
+  editProductPhotos: (req, res) => {
+    const { id } = req.params;
+    const level = req.decodedToken.level_id;
+    const singlePath = JSON.stringify(
+      req.files.map(
+        (e) => "http://localhost:8007" + "/image" + "/" + e.filename + " "
+      )
+    );
+
+    productsModel
+        .editProductPhotos(singlePath, id, level)
+        .then((data) => {
+          if (data.affectedRows === 0) {
+            res.status(404).json({
+              msg: "Data Not Found",
+              status: 404,
+            });
+          } else {
+            form.success(res, data);
+          }
+        })
+        .catch((err) => {
+          form.error(res, err);
+        })
   },
 
   deleteProduct: (req, res) => {

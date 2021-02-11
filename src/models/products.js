@@ -1,4 +1,5 @@
 const db = require("../config/mySQL");
+const fs = require("fs");
 
 module.exports = {
   productAll: (limit, offset, page, keyword) => {
@@ -24,11 +25,14 @@ module.exports = {
 
     return new Promise((resolve, reject) => {
       const queryString = [
-        `SELECT p.id, p.product_name, c.category_name, p.product_price, p.product_qty, p.product_desc, p.product_photo, p.user_id FROM products as p
-            INNER JOIN categories as c ON p.category_id = c.id_categories ORDER BY ${keyword} LIMIT ? OFFSET ?`,
+        `SELECT p.id, p.product_name, c.category_name, cd.conditions, p.product_price, p.product_qty, p.product_desc, p.product_photo,  IFNULL(AVG(rating),0) as rating, COUNT(review) as review FROM products as p
+        INNER JOIN categories as c ON p.category_id = c.id_categories
+        INNER JOIN conditions as cd ON p.condition_id = cd.id
+        LEFT JOIN ratings ON p.id = ratings.product_id
+        LEFT JOIN reviews ON p.id = reviews.product_id
+        GROUP BY p.id ORDER BY ${keyword} LIMIT ? OFFSET ?`,
         `SELECT * FROM product_sizes as ps INNER JOIN size as s ON s.id = ps.size_id`,
         `SELECT * FROM product_colors as pc INNER JOIN colors as c ON c.id = pc.color_id`,
-        `SELECT product_id, AVG(rating) as rating FROM ratings GROUP BY product_id`,
       ];
 
       db.query(
@@ -55,7 +59,7 @@ module.exports = {
             });
           }
           if (!err) {
-            resolve(newResult);
+            resolve([newResult, keyword]);
           } else {
             reject(err);
           }
@@ -105,51 +109,27 @@ module.exports = {
           status: 401,
         });
       } else {
-        db.query(
-          queryString,
-          [bodyProduct],
-          (err, data) => {
-            const queryStringSize = "INSERT INTO product_sizes SET ?";
-            const queryStringColor = "INSERT INTO product_colors SET ?";
+        db.query(queryString, [bodyProduct], (err, data) => {
+          const queryStringSize = "INSERT INTO product_sizes SET ?";
+          const queryStringColor = "INSERT INTO product_colors SET ?";
 
-            // Ini digunakan waktu udah masuk ke react native
+          // Ini digunakan waktu udah masuk ke react native
 
-            req.sizes.map((size) => {
-              const bodySize = {
-                product_id: data.insertId,
-                size_id: size,
-              };
-              db.query(queryStringSize, bodySize);
-            });
+          req.sizes.map((size) => {
+            const bodySize = {
+              product_id: data.insertId,
+              size_id: size,
+            };
+            db.query(queryStringSize, bodySize);
+          });
 
-            req.colors.map((color) => {
-              const bodyColor = {
-                product_id: data.insertId,
-                color_id: color,
-              };
-              db.query(queryStringColor, bodyColor);
-            });
-            if (!err) {
-              resolve(data);
-            } else {
-              reject(err);
-            }
-          }
-        );
-      }
-    });
-  },
-
-  editProduct: (req, params, res, level) => {
-    return new Promise((resolve, reject) => {
-      const queryString = "UPDATE products SET ? WHERE id = " + params;
-      if (level !== 2) {
-        reject({
-          msg: "Just Seller can Edit Product",
-          status: 401,
-        });
-      } else {
-        db.query(queryString, [req, level], (err, data) => {
+          req.colors.map((color) => {
+            const bodyColor = {
+              product_id: data.insertId,
+              color_id: color,
+            };
+            db.query(queryStringColor, bodyColor);
+          });
           if (!err) {
             resolve(data);
           } else {
@@ -160,7 +140,140 @@ module.exports = {
     });
   },
 
+  editProduct: (req, params, res, level, sizes, colors) => {
+    return new Promise((resolve, reject) => {
+      const queryString = [
+        `DELETE FROM product_sizes WHERE product_id = ${params}`,
+        `DELETE FROM product_colors WHERE product_id = ${params}`,
+      ];
+      if (level !== 2) {
+        reject({
+          msg: "Just Seller can Edit Product",
+          status: 401,
+        });
+      } else {
+        const queryUpdateProduct = "UPDATE products SET ? WHERE id = ?";
+
+        db.query(queryString.join(";"), (err, data) => {
+          if (!err) {
+            db.query(queryUpdateProduct, [req, params], (err, data) => {
+              const queryStringSize = "INSERT INTO product_sizes SET ?";
+              const queryStringColor = "INSERT INTO product_colors SET ?";
+
+              sizes.map((size) => {
+                const bodySize = {
+                  product_id: params,
+                  size_id: size,
+                };
+                db.query(queryStringSize, bodySize);
+              });
+
+              colors.map((color) => {
+                const bodyColor = {
+                  product_id: params,
+                  color_id: color,
+                };
+                db.query(queryStringColor, bodyColor);
+              });
+              if (!err) {
+                resolve(data);
+              } else {
+                reject(err);
+              }
+            });
+          } else {
+            reject({
+              msg: "Error",
+              status: 500,
+            });
+          }
+        });
+      }
+    });
+  },
+
+  editProductPhotos: (body, id, level) => {
+    let photo = "";
+
+    const findPhoto = new Promise((resolve, reject) => {
+      const queryFindPhotos =
+        "SELECT product_photo FROM products WHERE id = " + id;
+      db.query(queryFindPhotos, (err, data) => {
+        if (!err) {
+          resolve(data);
+        } else {
+          reject(err);
+        }
+      });
+    });
+
+    findPhoto.then((data) => {
+      return (photo = data[0].product_photo);
+      console.log("Luar Promise ", photo);
+    });
+
+    return new Promise((resolve, reject) => {
+      if (level !== 2) {
+        reject({
+          msg: "Just Seller can Edit Product",
+          status: 401,
+        });
+      } else {
+        const queryString =
+          "UPDATE products SET product_photo = ? WHERE id = ?";
+        db.query(queryString, [body, id], (err, data) => {
+          //Delete photo from directory
+          JSON.parse(photo).map((photo) => {
+            //get name file from url
+            let newPhoto = photo.split("/").pop();
+            if (fs.existsSync("public/image/" + newPhoto.trim())) {
+              fs.unlink("public/image/" + newPhoto.trim(), (err) => {
+                reject({
+                  msg: "Error",
+                  status: 500,
+                  error: err,
+                });
+              });
+            }
+          });
+          if (!err) {
+            console.log("Dalam Promise", photo);
+            resolve({
+              msg: "Edit photos is successfully",
+              status: 200,
+            });
+          } else {
+            reject({
+              msg: "Edit photos is failed",
+              status: 500,
+              error: err,
+            });
+          }
+        });
+      }
+    });
+  },
+
   deleteProduct: (params, level) => {
+    let photo = "";
+
+    const findPhoto = new Promise((resolve, reject) => {
+      const queryFindPhotos =
+        "SELECT product_photo FROM products WHERE id = " + params;
+      db.query(queryFindPhotos, (err, data) => {
+        if (!err) {
+          resolve(data);
+        } else {
+          reject(err);
+        }
+      });
+    });
+
+    findPhoto.then((data) => {
+      return (photo = data[0].product_photo);
+      console.log("Luar Promise ", photo);
+    });
+
     return new Promise((resolve, reject) => {
       const queryString = [
         `DELETE FROM products WHERE id = ${params}`,
@@ -174,6 +287,19 @@ module.exports = {
         });
       } else {
         db.query(queryString.join(";"), (err, data) => {
+          JSON.parse(photo).map((photo) => {
+            //get name file from url
+            let newPhoto = photo.split("/").pop();
+            if (fs.existsSync("public/image/" + newPhoto.trim())) {
+              fs.unlink("public/image/" + newPhoto.trim(), (err) => {
+                reject({
+                  msg: "Error",
+                  status: 500,
+                  error: err,
+                });
+              });
+            }
+          });
           if (!err) {
             resolve(data);
           } else {
