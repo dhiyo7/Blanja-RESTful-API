@@ -79,9 +79,6 @@ module.exports = {
                 status: 401,
               });
             } else {
-              // const payload = { username, data[0].level_id };
-              // console.log(data[0].level_id);
-
               const payload = {
                 level_id: data[0].level_id,
                 id: data[0].id,
@@ -213,63 +210,188 @@ module.exports = {
   //check OTP
   checkOTP: (email, otp) => {
     return new Promise((resolve, reject) => {
-      const queryString = `SELECT * FROM otp_reset WHERE email = ? AND otp = ?`
+      const queryString = `SELECT * FROM otp_reset WHERE email = ? AND otp = ?`;
       db.query(queryString, [email, otp], (err, data) => {
-        if(!err) {
-          if(data[0]) {
-            const qs = `DELETE FROM otp_reset WHERE email = ? and otp = ?`
+        if (!err) {
+          if (data[0]) {
+            const qs = `DELETE FROM otp_reset WHERE email = ? and otp = ?`;
             db.query(qs, [email, otp], (err, data) => {
               if (!err) {
                 resolve({
                   status: 200,
                   message: `reset your password`,
                   email: email,
-                })
+                });
               } else {
                 reject({
                   status: 500,
                   message: `Internal server error`,
                   details: err,
-                })
+                });
               }
-            })
+            });
           } else {
             reject({
               status: 404,
-              message: `OTP code not match`
-            })
+              message: `OTP code not match`,
+            });
           }
         } else {
           reject({
             status: 500,
             message: `Internal server error`,
             details: err,
-          })
+          });
         }
-      })
-    })
+      });
+    });
   },
 
   resetPassword: (body) => {
     return new Promise((resolve, reject) => {
-      const saltRounds = Math.floor(Math.random() * 10) + 1
+      const saltRounds = Math.floor(Math.random() * 10) + 1;
       bcrypt.hash(body.password, saltRounds, (err, hashedPassword) => {
-        const queryString = `UPDATE users SET password = ? WHERE email = ?`
+        const queryString = `UPDATE users SET password = ? WHERE email = ?`;
         db.query(queryString, [hashedPassword, body.email], (err, data) => {
           if (!err) {
             resolve({
               status: 200,
-              message: 'Password successfully change'
-            })
+              message: "Password successfully change",
+            });
           } else {
             reject({
               status: 500,
-              message: 'Internal server err',
+              message: "Internal server err",
               details: err,
-            })
+            });
           }
-        })
-      })
-    })
-  }
+        });
+      });
+    });
+  },
+
+  getProfile: (id) => {
+    return new Promise((resolve, reject) => {
+      const queryString = "SELECT * FROM users WHERE id = ?";
+      db.query(queryString, id, (err, data) => {
+        if (!err) {
+          resolve(data);
+        } else {
+          reject(err);
+        }
+      });
+    });
+  },
+
+  updateProfile: (body, id) => {
+    return new Promise((resolve, reject) => {
+      const { old_password } = body;
+      const queryOldPassword = "SELECT password FROM users WHERE id = ?";
+      db.query(queryOldPassword, id, (err, data) => {
+        if (err) {
+          reject({
+            msg: "Error SQL",
+            status: 500,
+            err,
+          });
+        } else {
+          bcrypt.compare(old_password, data[0].password, (err, result) => {
+            if (err) {
+              reject({
+                msg: "Hash Error",
+                status: 500,
+                err,
+              });
+            }
+            if (!result) {
+              reject({
+                msg: "Wrong Password",
+                status: 401,
+              });
+            } else {
+              const queryUpdateUser = "UPDATE users SET ? WHERE id = ?";
+              const { new_password, confirm_new_password } = body;
+              if (
+                new_password !== undefined ||
+                confirm_new_password !== undefined
+              ) {
+                console.log("Ana Password Anyar");
+                if (new_password === confirm_new_password) {
+                  const saltRounds = 10;
+                  bcrypt.genSalt(saltRounds, (err, salt) => {
+                    if (err) {
+                      reject(err);
+                    }
+
+                    bcrypt.hash(
+                      body.new_password,
+                      salt,
+                      (err, hashedPassword) => {
+                        if (err) {
+                          reject(err);
+                        }
+                        delete body.new_password;
+                        delete body.confirm_new_password;
+                        delete body.old_password;
+                        const newBody = {
+                          ...body,
+                          password: hashedPassword,
+                        };
+                        db.query(
+                          queryUpdateUser,
+                          [newBody, id],
+                          (err, data) => {
+                            if (!err) {
+                              resolve({
+                                msg: "Update profile is successful",
+                                status: 200,
+                                data: data,
+                              });
+                            } else {
+                              reject({
+                                msg: "Error",
+                                status: 500,
+                                error: err,
+                              });
+                            }
+                          }
+                        );
+                      }
+                    );
+                  });
+                } else {
+                  reject({
+                    msg: "Passwort isn't same",
+                    status: 401,
+                  });
+                }
+              } else {
+                delete body.old_password;
+                const newBody = {
+                  ...body,
+                };
+                db.query(queryUpdateUser, [newBody, id], (err, data) => {
+                  if (!err) {
+                    resolve({
+                      msg: "Update profile is successful",
+                      status: 200,
+                      data: data,
+                    });
+                  } else {
+                    reject({
+                      msg: "Error",
+                      status: 500,
+                      error: err,
+                    });
+                  }
+                });
+              }
+
+              // console.log(password);
+            }
+          });
+        }
+      });
+    });
+  },
 };
