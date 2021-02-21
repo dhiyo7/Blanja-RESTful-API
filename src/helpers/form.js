@@ -90,6 +90,16 @@ module.exports = {
 
     let result = Object.values(orders);
 
+    result.sort((a,b) => {
+      if (a['created_at'] < b['created_at']) {
+        return 1;
+      }
+      if (a['created_at'] > b['created_at']) {
+        return -1;
+      }
+      return 0;
+    })
+
     const resObject = {
       message: "Data Success",
       status: 200,

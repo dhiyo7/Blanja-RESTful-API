@@ -7,7 +7,7 @@ module.exports = {
     const { keyword } = req.query;
     const limit = Number(query.limit) || 5;
     const page = Number(query.page) || 1;
-    const offset = (page - 1) * limit || 1;
+    const offset = (page - 1) * limit || 0;
     productsModel
       .productAll(limit, offset, page, keyword)
       .then((data) => {
@@ -52,7 +52,7 @@ module.exports = {
     const level = req.decodedToken.level_id;
     const filepath = JSON.stringify(
       req.files.map(
-        (e) => "http://192.168.18.29:8007" + "/image" + "/" + e.filename + " "
+        (e) => "/image/" + e.filename
       )
     );
 
@@ -116,7 +116,7 @@ module.exports = {
     const level = req.decodedToken.level_id;
     const singlePath = JSON.stringify(
       req.files.map(
-        (e) => "http://localhost:8007" + "/image" + "/" + e.filename + " "
+        (e) => "/image/" + e.filename
       )
     );
 
