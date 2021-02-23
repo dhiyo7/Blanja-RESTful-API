@@ -17,7 +17,7 @@ module.exports = {
             status: 404,
           });
         } else {
-          form.nestedAllProduct(res, data[0],data[1]);
+          form.nestedAllProduct(res, data[0], data[1]);
         }
       })
       .catch((err) => {
@@ -51,9 +51,7 @@ module.exports = {
     const user_id = req.decodedToken.id;
     const level = req.decodedToken.level_id;
     const filepath = JSON.stringify(
-      req.files.map(
-        (e) => "/image/" + e.filename
-      )
+      req.files.map((e) => "/image/" + e.filename)
     );
 
     // const filepath = "http://192.168.18.120/phto"
@@ -81,15 +79,20 @@ module.exports = {
 
   editProduct: (req, res) => {
     const { body } = req;
+    console.log("Body Controller ", body);
     const { id } = req.params;
     const level = req.decodedToken.level_id;
-    
+
     const sizes = body.sizes;
-    const colors = body.colors
+    const colors = body.colors;
+    // console.log(colors);
     delete body.sizes;
     delete body.colors;
     const insertBody = { ...body };
-    // console.log(insertBody);
+
+    console.log("Body ", insertBody);
+    console.log("Size ", sizes);
+    console.log("Color ", colors);
     productsModel
       .editProduct(insertBody, id, res, level, sizes, colors)
       .then((data) => {
@@ -115,26 +118,24 @@ module.exports = {
     const { id } = req.params;
     const level = req.decodedToken.level_id;
     const singlePath = JSON.stringify(
-      req.files.map(
-        (e) => "/image/" + e.filename
-      )
+      req.files.map((e) => "/image/" + e.filename)
     );
 
     productsModel
-        .editProductPhotos(singlePath, id, level)
-        .then((data) => {
-          if (data.affectedRows === 0) {
-            res.status(404).json({
-              msg: "Data Not Found",
-              status: 404,
-            });
-          } else {
-            form.success(res, data);
-          }
-        })
-        .catch((err) => {
-          form.error(res, err);
-        })
+      .editProductPhotos(singlePath, id, level)
+      .then((data) => {
+        if (data.affectedRows === 0) {
+          res.status(404).json({
+            msg: "Data Not Found",
+            status: 404,
+          });
+        } else {
+          form.success(res, data);
+        }
+      })
+      .catch((err) => {
+        form.error(res, err);
+      });
   },
 
   deleteProduct: (req, res) => {
@@ -165,7 +166,7 @@ module.exports = {
     const user_id = req.decodedToken.id;
     productsModel
       .getProductByUserId(user_id)
-      .then((data) => {;
+      .then((data) => {
         form.nestedProductByUser(res, data);
       })
       .catch((err) => {

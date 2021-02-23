@@ -432,12 +432,14 @@ module.exports = {
     let productArray = data[0];
     let sizeArray = data[1];
     let colorArray = data[2];
+    let ratingArray = data[3];
 
     let products = productArray.reduce((map, row) => {
       const key = row["id"];
       map[key] = row;
       row.sizes = [];
       row.colors = [];
+      row.rating = 0;
       return map;
     }, {});
 
@@ -457,6 +459,16 @@ module.exports = {
       if (map[key]) {
         if (!map[key].colors) map[key].colors = [];
         map[key].colors.push(row);
+      }
+      return map;
+    }, products);
+
+    ratingArray.reduce((map, row) => {
+      const key = row["product_id"];
+      map[key];
+      if (map[key]) {
+        if (!map[key].rating) map[key].rating = 0;
+        map[key].rating = row["rating"];
       }
       return map;
     }, products);

@@ -160,21 +160,32 @@ module.exports = {
               const queryStringSize = "INSERT INTO product_sizes SET ?";
               const queryStringColor = "INSERT INTO product_colors SET ?";
 
-              sizes.map((size) => {
-                const bodySize = {
-                  product_id: params,
-                  size_id: size,
-                };
-                db.query(queryStringSize, bodySize);
-              });
+              if (sizes !== undefined) {
+                const newSizes = Array.isArray(sizes) === false ? [sizes] : sizes;
+                console.log(Array.isArray(sizes));
+                console.log("New Size ", newSizes);
+                newSizes.map((size) => {
+                  const bodySize = {
+                    product_id: params,
+                    size_id: size,
+                  };
+                  db.query(queryStringSize, bodySize);
+                });
+              }
 
-              colors.map((color) => {
-                const bodyColor = {
-                  product_id: params,
-                  color_id: color,
-                };
-                db.query(queryStringColor, bodyColor);
-              });
+              if (colors !== undefined) {
+                const newColors = Array.isArray(colors) === false ? [colors] : colors;
+                console.log(Array.isArray(colors));
+                console.log("newColors ", newColors);
+                newColors.map((color) => {
+                  const bodyColor = {
+                    product_id: params,
+                    color_id: color,
+                  };
+                  db.query(queryStringColor, bodyColor);
+                });
+              }
+
               if (!err) {
                 resolve(data);
               } else {
@@ -346,6 +357,7 @@ module.exports = {
         WHERE p.category_id = ? AND s.size_id = ? AND cl.color_id = ?`,
         `SELECT * FROM product_sizes`,
         `SELECT * FROM product_colors`,
+        `SELECT product_id, AVG(rating) as rating FROM ratings GROUP BY product_id`,
       ];
 
       db.query(
