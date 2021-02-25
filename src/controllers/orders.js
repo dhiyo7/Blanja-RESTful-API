@@ -83,6 +83,24 @@ module.exports = {
       });
   },
 
+  getOrderHistorySellerById: (req, res) => {
+    const user_id = req.decodedToken.id;
+    const { id } = req.params;
+
+    orderModel
+      .getOrderHistorySellerById(id, user_id)
+      .then((data) => {
+        form.nestedOne(res, data);
+      })
+      .catch((error) => {
+        res.status(500).send({
+          message: "failed",
+          status: false,
+          error: error,
+        });
+      });
+  },
+
   updateStatusOrder: (req, res) => {
     const {id} = req.params;
     const {body} = req;

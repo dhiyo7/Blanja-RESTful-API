@@ -12,19 +12,15 @@ module.exports = {
     chatModel
       .addNewMessage(body)
       .then((result) => {
-        if (!result.length) {
-          res.status(result.status).json(result);
-        } else {
-          if (
-            global.io
-              .to(body.seller)
-              .to(body.buyer)
-              .emit("refresh", "someMessage")
-          ) {
-            console.log(`Refresh to ${body.seller} and ${body.buyer}`);
-          }
-          res.status(result.status).json(result);
+        if (
+          global.io
+            .to(body.seller)
+            .to(body.buyyer)
+            .emit("refresh", "someMessage")
+        ) {
+          console.log(`Refresh to ${body.seller} and ${body.buyyer}`);
         }
+        res.status(result.status).json(result);
       })
       .catch((error) => {
         res.status(error.status).json(error);
